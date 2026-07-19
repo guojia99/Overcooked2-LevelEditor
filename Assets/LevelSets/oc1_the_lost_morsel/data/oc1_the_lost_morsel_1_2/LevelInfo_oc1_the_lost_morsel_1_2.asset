@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9613355741a1a7e429f1ad97a816f6de, type: 3}
+  m_Name: LevelInfo_oc1_the_lost_morsel_1_2
+  m_EditorClassIdentifier: 
+  levelName: 1-2
+  levelNameZH: 1-2
+  screenshot: {fileID: 0}
+  sceneName: s_oc1_the_lost_morsel_1_2
+  recipes:
+  - {fileID: 11400000, guid: b98d38299de379745b64461474cd7943, type: 2}
+  - {fileID: 11400000, guid: d1bce708a9311b94dbf8e6995d33e20a, type: 2}
+  - {fileID: 11400000, guid: 68f4e9cdbfeb9db4a81f0fc9f53c0bb6, type: 2}
+  debugRecipeCount: 0
+  optionalRecipeMatchListItems: []
+  disableDynamicParenting: 1
+  config_1p: {fileID: 11400000, guid: cbfac549e2da75645a63626f514ccce8, type: 2}
+  config_2p: {fileID: 11400000, guid: 6c79c00c1bb647e479fd52b677f38b0d, type: 2}
+  config_3p: {fileID: 11400000, guid: 3ed3020728f4d0f40aa4b7c8a5c36b5a, type: 2}
+  config_4p: {fileID: 11400000, guid: 97ae638444775d8488590771fa49b9bc, type: 2}
+  dependencies:
+  - bundle47
