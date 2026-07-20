@@ -454,6 +454,23 @@ namespace LevelEditor
                         break;
                     }
 
+                case "p_dlc5_throne_01":
+                    {
+                        PseudoPrefabSO matSO = ScriptableObject.CreateInstance<PseudoPrefabSO>();
+                        matSO.prefabName = "mat_dlc5_throne_01";
+                        matSO.bundleName = "bundle248";
+                        matSO.assetPath = "Assets\\downloadablecontent\\dlc05\\dlc_assets\\models\\dressing assets\\materials\\mat_dlc5_ivy_01.mat".Replace("\\", "/");
+                        Material mat1 = PseudoPrefabManager.LoadAsset<Material>(matSO);
+                        matSO.prefabName = "mat_dlc5_foliage_01";
+                        matSO.bundleName = "bundle248";
+                        matSO.assetPath = "Assets\\downloadablecontent\\dlc05\\dlc_assets\\models\\dressing assets\\materials\\mat_dlc5_foliage_01.mat".Replace("\\", "/");
+                        Material mat0 = PseudoPrefabManager.LoadAsset<Material>(matSO);
+                        childGameObject.transform.Find("m_dlc5_vines_A").GetComponent<Renderer>().materials = new Material[2] { mat0, mat1 };
+                        childGameObject.transform.Find("m_dlc5_vines_B").GetComponent<Renderer>().materials = new Material[2] { mat0, mat1 };
+                        DestroyImmediate(matSO);
+                        break;
+                    }
+
                 default:
                     break;
             }

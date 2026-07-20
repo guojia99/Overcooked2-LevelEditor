@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4225945361640868}
   - component: {fileID: 114752300557213336}
   - component: {fileID: 114642592172525528}
+  - component: {fileID: 114315682054338328}
   m_Layer: 0
   m_Name: p_dlc5_throne_01
   m_TagString: Untagged
@@ -41,6 +42,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114315682054338328
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1987868307805740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b19728b6e0dfe44baf2f80df9bfc1e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabTag: p_dlc5_throne_01
 --- !u!114 &114642592172525528
 MonoBehaviour:
   m_ObjectHideFlags: 1
