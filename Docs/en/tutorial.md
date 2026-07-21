@@ -185,6 +185,7 @@ On the `PseudoPrefabManager > PseudoPrefabManagerStub` component:
 - Do not modify temporary objects.
 - The name of the level set configuration must be `LevelSetInfo`.
 - Do not create new assets in the `common*` directory. They should be created within your level set directory so that they are packaged into your level set info bundle or scene bundle.
+- Materials (e.g. floor materials) should be copied to your level set directory and then referenced from there.
 - Add the BGM's bundle to `LevelInfoSO.dependencies`.
 - If you find that a counter does not highlight when the player approaches it (this issue occurs when the counter appearance is set to `CounterCampingSO`), add a `FogConfig` component to `MultiplayerGameCamera/Camera` and set the `fogFar` field to 10000 and the `fogColour` field to pure black. See `s_oc1_story_3_1` for reference.
 - When releasing a new version of the level set, remember to update `LevelSetInfoSO.version`.

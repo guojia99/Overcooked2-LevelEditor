@@ -11,7 +11,7 @@
   > 1. 下载 Assetripper 反编译工具 https://github.com/assetripper/assetripper。
   > 2. 打开 Assetripper，File - Settings - 勾选 Skip StreamingAssets Folder - 最下面 Save。
   > 3. File - Open Folder - 选择游戏目录中 `Overcooked! 2/Overcooked2_Data` 文件夹。
-  > 4. Export - Export All Files - 勾选 Create Subfolder - Select Folder 选择导出目录 - Export Unity Project，等待导出完成。
+  > 4. Export - Export All Files - 勾选 Create Subfolder - Select Folder 选择你的导出目录 - Export Unity Project，等待导出完成。
   > 5. 将导出目录里的 `ExportedProject/Assets/Scripts/Assembly-CSharp` 文件夹拷贝到项目 `Assets/Scripts` 中。
   > 6. 将项目的 `Assembly-CSharp-Patch` 文件夹中的所有内容拷贝到项目 `Assets/Scripts/Assembly-CSharp` 文件夹中，替换。
 
@@ -191,6 +191,7 @@
 - 不要操作临时加载的物体。
 - 关卡集配置的命名必须为 `LevelSetInfo`。
 - 不要在 `common*` 目录下创建新资源。应该创建在你的关卡集目录下，使得它被打包到你的关卡集 info 包或场景包中。
+- 材质（如地面材质）应该复制一份到你的关卡集目录下再引用。
 - 在 `LevelInfoSO.dependencies` 额外添加 BGM 所在 bundle。
 - 如果发现桌台靠近时没有高光（桌台外观选 `CounterCampingSO` 会有这一问题），在 `MultiplayerGameCamera/Camera` 添加组件 `FogConfig` 并设置字段 `fogFar` 为 10000，`fogColour` 为纯黑。参考 `s_oc1_story_3_1`。
 - 发布关卡集的新版本时，记得修改 `LevelSetInfoSO.version`。
