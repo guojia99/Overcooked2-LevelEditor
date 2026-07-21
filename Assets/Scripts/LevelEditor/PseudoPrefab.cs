@@ -41,10 +41,7 @@ namespace LevelEditor
             childGameObject.name = stub.pseudoPrefabSO.prefabName;
 
             EditorGridSnap editorGridSnap = childGameObject.GetComponent<EditorGridSnap>();
-            if (editorGridSnap != null && !Application.isPlaying &&
-                childGameObject.GetComponent<PlateStation>() == null &&
-                childGameObject.GetComponentInChildren<WashingStation>() == null &&
-                childGameObject.GetComponent<TriggerZone>() == null)
+            if (editorGridSnap != null && !Application.isPlaying)
             {
                 editorGridSnap.enabled = true;
                 editorGridSnap.GetType()
@@ -66,8 +63,10 @@ namespace LevelEditor
             }
             if (editorGridSnap != null && !Application.isPlaying && (
                 childGameObject.GetComponent<Teleportal>() != null || 
-                childGameObject.GetComponent<Plate>() != null ||
-                childGameObject.GetComponent<FireExtinguishSpray>() != null
+                childGameObject.GetComponent<PlateStation>() != null ||
+                childGameObject.GetComponentInChildren<WashingStation>() != null ||
+                childGameObject.GetComponent<TriggerZone>() != null ||
+                childGameObject.GetComponent<PhysicalAttachment>() != null
                 ))
             {
                 editorGridSnap.enabled = false;
