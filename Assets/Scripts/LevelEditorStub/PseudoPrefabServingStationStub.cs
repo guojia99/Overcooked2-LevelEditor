@@ -8,5 +8,6 @@ namespace LevelEditorStub
 	public class PseudoPrefabServingStationStub : PseudoPrefabStub
 	{
         [SerializeField] public PseudoPrefabPlateReturnStub plateReturn;
-	}
+		[SerializeField] public PseudoPrefabPlateReturnStub[] plateReturns;
+    }
 }

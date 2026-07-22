@@ -37,7 +37,8 @@ namespace LevelEditor
             configTemplate.m_rounds[0].m_recipes = recipeList;
 
             if (config.recipes.Any(x => x is CustomRecipeSO) ||
-                config.optionalRecipeMatchListItems != null && config.optionalRecipeMatchListItems.Length > 0)
+                config.optionalRecipeMatchListItems != null && config.optionalRecipeMatchListItems.Length > 0 ||
+                config.allIngredients != null && config.allIngredients.Length > 0)
             {
                 RecipeMatchList theRecipeMatchList = configTemplate.m_recipeMatchingList;
                 RecipeMatchList newRecipeMatchList = ScriptableObject.CreateInstance<RecipeMatchList>();
@@ -46,19 +47,25 @@ namespace LevelEditor
                 newRecipeMatchList.m_cookingSteps = new CookingStepData[0];
 
                 List<OrderDefinitionNode> newRecipes = new List<OrderDefinitionNode>();
+                
                 if (config.optionalRecipeMatchListItems != null && config.optionalRecipeMatchListItems.Length > 0)
                 {
-                    newRecipes = config.optionalRecipeMatchListItems
-                        .Select(x => RecipeHelper.GetOptionalRecipeNode(x))
-                        .ToList();
+                    newRecipes.AddRange(config.optionalRecipeMatchListItems.Select(x => RecipeHelper.GetOptionalRecipeNode(x)));
                 }
+
+                if (config.allIngredients != null && config.allIngredients.Length > 0)
+                {
+                    newRecipes.AddRange(config.allIngredients.Select(x => RecipeHelper.GetIngredientOrderNode(x) as OrderDefinitionNode));
+                }
+
+                newRecipes.AddRange(recipeList.m_recipes.Select(x => x.m_order));
+
                 if (config.recipes.Any(x => x is CustomRecipeSO))
                 {
                     for (int i = 0; i < recipeList.m_recipes.Length; i++)
                     {
                         if (!(config.recipes[i] is CustomRecipeSO)) continue;
                         CustomRecipeSO customRecipeSO = (CustomRecipeSO)config.recipes[i];
-                        newRecipes.Add(recipeList.m_recipes[i].m_order);
                         if (config.optionalRecipeMatchListItems == null || customRecipeSO.modelSO == null) continue;
                         for (int j = 0; j < config.optionalRecipeMatchListItems.Length; j++)
                         {

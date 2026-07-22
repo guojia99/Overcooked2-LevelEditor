@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LevelEditorStub;
+using System.Linq;
 
 
 namespace LevelEditor
@@ -11,11 +12,16 @@ namespace LevelEditor
         public override void LateSetup()
         {
             PseudoPrefabServingStationStub servingStationStub = (PseudoPrefabServingStationStub)stub;
+            List<PlateReturnStation> allReturns = new List<PlateReturnStation>();
             if (servingStationStub.plateReturn != null)
-                childGameObject.GetComponent<PlateStation>().m_returnStations = new PlateReturnStation[1]
-                {
-                    servingStationStub.plateReturn.GetComponent<PseudoPrefab>().childGameObject.GetComponent<PlateReturnStation>()
-                };
+            {
+                allReturns.Add(servingStationStub.plateReturn.GetComponent<PseudoPrefab>().childGameObject.GetComponent<PlateReturnStation>());
+            }
+            if (servingStationStub.plateReturns != null)
+            {
+                allReturns.AddRange(servingStationStub.plateReturns.Select(x => x.GetComponent<PseudoPrefab>().childGameObject.GetComponent<PlateReturnStation>()));
+            }
+            childGameObject.GetComponent<PlateStation>().m_returnStations = allReturns.ToArray();
         }
     }
 }

@@ -192,7 +192,7 @@ namespace LevelEditor
             return lookup;
         }
 
-        private static IngredientOrderNode GetIngredientOrderNode(PseudoPrefabSO pseudoPrefabSO)
+        public static IngredientOrderNode GetIngredientOrderNode(PseudoPrefabSO pseudoPrefabSO)
         {
             GameObject ingredient = PseudoPrefabManager.LoadAsset<GameObject>(pseudoPrefabSO);
             while (ingredient.GetComponent<WorkableItem>() != null)
