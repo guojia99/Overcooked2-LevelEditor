@@ -46,7 +46,7 @@ namespace LevelEditor
                 editorGridSnap.enabled = true;
                 editorGridSnap.GetType()
                     .GetField("m_constrainY", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
-                    .SetValue(editorGridSnap, true);
+                    .SetValue(editorGridSnap, false);
             }
             if (editorGridSnap != null &&
                 gameObject.transform.FindParentRecursive("Animated Objects") != null)
