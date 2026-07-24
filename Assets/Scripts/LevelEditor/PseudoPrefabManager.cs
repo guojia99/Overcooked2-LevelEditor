@@ -158,9 +158,10 @@ namespace LevelEditor
                 .SetValue(component, LoadAsset(stub.RecipeUISO).GetComponent<RecipeWidgetUIController>());
 
             component = stub.AudioManagerGO.GetComponent<CampaignAudioManager>();
+            AudioClip music = stub.InLevelMusicSO == null ? null : LoadAsset<AudioClip>(stub.InLevelMusicSO);
             component.GetType()
                 .GetField("m_inLevelMusic", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
-                .SetValue(component, LoadAsset<AudioClip>(stub.InLevelMusicSO));
+                .SetValue(component, music);
             component.GetType()
                 .GetField("m_inLevelAmbiences", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                 .SetValue(component, stub.InLevelAmbiences.Select(x => (GameLoopingAudioTag)x).ToArray());
