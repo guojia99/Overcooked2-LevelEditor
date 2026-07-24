@@ -46,19 +46,19 @@ namespace LevelEditor
                 newRecipeMatchList.m_includeLists = new RecipeMatchList[] { theRecipeMatchList };
                 newRecipeMatchList.m_cookingSteps = new CookingStepData[0];
 
-                List<OrderDefinitionNode> newRecipes = new List<OrderDefinitionNode>();
+                List<OrderDefinitionNode> newRecipeMatchListItems = new List<OrderDefinitionNode>();
                 
                 if (config.optionalRecipeMatchListItems != null && config.optionalRecipeMatchListItems.Length > 0)
                 {
-                    newRecipes.AddRange(config.optionalRecipeMatchListItems.Select(x => RecipeHelper.GetOptionalRecipeNode(x)));
+                    newRecipeMatchListItems.AddRange(config.optionalRecipeMatchListItems.Select(x => RecipeHelper.GetOptionalRecipeNode(x)));
                 }
 
                 if (config.allIngredients != null && config.allIngredients.Length > 0)
                 {
-                    newRecipes.AddRange(config.allIngredients.Select(x => RecipeHelper.GetIngredientOrderNode(x) as OrderDefinitionNode));
+                    newRecipeMatchListItems.AddRange(config.allIngredients.Select(x => RecipeHelper.GetIngredientOrderNode(x) as OrderDefinitionNode));
                 }
 
-                newRecipes.AddRange(recipeList.m_recipes.Select(x => x.m_order));
+                newRecipeMatchListItems.AddRange(recipeList.m_recipes.Select(x => x.m_order));
 
                 if (config.recipes.Any(x => x is CustomRecipeSO))
                 {
@@ -69,15 +69,16 @@ namespace LevelEditor
                         if (config.optionalRecipeMatchListItems == null || customRecipeSO.modelSO == null) continue;
                         for (int j = 0; j < config.optionalRecipeMatchListItems.Length; j++)
                         {
-                            if (customRecipeSO.modelSO == config.optionalRecipeMatchListItems[j].modelSO)
+                            CustomRecipeSO customRecipe = config.optionalRecipeMatchListItems[j] as CustomRecipeSO;
+                            if (customRecipe != null && customRecipeSO.modelSO == customRecipe.modelSO)
                             {
-                                recipeList.m_recipes[i].m_order.m_platingPrefab = newRecipes[j].m_platingPrefab;
+                                recipeList.m_recipes[i].m_order.m_platingPrefab = newRecipeMatchListItems[j].m_platingPrefab;
                                 break;
                             }
                         }
                     }
                 }
-                newRecipeMatchList.m_recipes = newRecipes.ToArray();
+                newRecipeMatchList.m_recipes = newRecipeMatchListItems.ToArray();
 
                 configTemplate.m_recipeMatchingList = newRecipeMatchList;
             }

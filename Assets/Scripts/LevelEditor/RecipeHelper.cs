@@ -110,8 +110,13 @@ namespace LevelEditor
             return recipe;
         }
 
-        public static OrderDefinitionNode GetOptionalRecipeNode(CustomRecipeSO customRecipeSO)
+        public static OrderDefinitionNode GetOptionalRecipeNode(ScriptableObject recipeSO)
         {
+            if (recipeSO is PseudoPrefabSO)
+                return PseudoPrefabManager.LoadAsset<OrderDefinitionNode>(recipeSO as PseudoPrefabSO);
+
+            CustomRecipeSO customRecipeSO = recipeSO as CustomRecipeSO;
+            if (customRecipeSO == null) return null;
             OrderDefinitionNode recipe;
 
             if (customRecipeSO is CustomRecipeOptionalPizzaSO)
