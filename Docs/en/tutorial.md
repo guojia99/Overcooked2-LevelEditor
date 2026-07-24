@@ -163,7 +163,7 @@ On the `PseudoPrefabManager > PseudoPrefabManagerStub` component:
 
 - Moving Ground
 
-  See `s_test_level_5 > Design/Platforms` for reference. When there are moving grounds in the level, the `levelinfo.disabledynamicparenting` checkbox should be unchecked. __Each moving ground should have an `ObjectContainer` component added to a container object, ensuring that the ground's `Collider` is under its hierarchy. If a moving ground has counters on it, a separate `QuadGridManager` component should be added to the container object to manage the grid on that ground.__
+  See `s_test_level_5 > Design/Platforms` for reference. When there are moving grounds in the level, the `levelinfo.disabledynamicparenting` checkbox should be unchecked. __Each ground (including moving grounds and static grounds) should have an `ObjectContainer` component added to a container object, ensuring that the ground's `Collider` is under its hierarchy. If a moving ground has counters on it, a separate `QuadGridManager` component should be added to the container object to manage the grid on that ground.__
 
 - Moving Counters
 

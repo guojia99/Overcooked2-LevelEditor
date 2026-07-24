@@ -169,7 +169,7 @@
 
 - 移动地面
 
-  参考 `s_test_level_5 > Design/Platforms`。存在移动地面时，`levelinfo.disabledynamicparenting` 应取消勾选。__每个移动地面都应该添加 `ObjectContainer` 组件，保证移动地面的 `Collider` 在这个物体的层级之下。如果移动地面上包含桌台，应该单独添加 `QuadGridManager` 组件管理这个地面上的网格。__
+  参考 `s_test_level_5 > Design/Platforms`。存在移动地面时，`levelinfo.disabledynamicparenting` 应取消勾选。__每个地面（包括移动地面和静止地面）都应该添加 `ObjectContainer` 组件，保证地面的 `Collider` 在这个物体的层级之下。如果移动地面上包含桌台，应该单独添加 `QuadGridManager` 组件管理这个地面上的网格。__
 
 - 移动桌台
 
