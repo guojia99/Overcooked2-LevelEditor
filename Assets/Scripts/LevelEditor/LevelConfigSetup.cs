@@ -30,13 +30,13 @@ namespace LevelEditor
             recipeList = ScriptableObject.Instantiate(recipeList);
             recipeList.name = config.name;
             int takeNum = config.debugRecipeCount == 0 ? config.recipes.Length : config.debugRecipeCount;
-            recipeList.m_recipes = config.recipes
-                .Take(takeNum)
+            ScriptableObject[] recipes = config.recipes.Take(takeNum).ToArray();
+            recipeList.m_recipes = recipes
                 .Select(x => RecipeHelper.GetRecipe(x))
                 .ToArray();
             configTemplate.m_rounds[0].m_recipes = recipeList;
 
-            if (config.recipes.Any(x => x is CustomRecipeSO) ||
+            if (recipes.Any(x => x is CustomRecipeSO) ||
                 config.optionalRecipeMatchListItems != null && config.optionalRecipeMatchListItems.Length > 0 ||
                 config.allIngredients != null && config.allIngredients.Length > 0)
             {
@@ -60,9 +60,9 @@ namespace LevelEditor
 
                 newRecipeMatchListItems.AddRange(recipeList.m_recipes.Select(x => x.m_order));
 
-                if (config.recipes.Any(x => x is CustomRecipeSO))
+                if (recipes.Any(x => x is CustomRecipeSO))
                 {
-                    for (int i = 0; i < recipeList.m_recipes.Length; i++)
+                    for (int i = 0; i < recipes.Length; i++)
                     {
                         if (!(config.recipes[i] is CustomRecipeSO)) continue;
                         CustomRecipeSO customRecipeSO = (CustomRecipeSO)config.recipes[i];

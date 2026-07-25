@@ -44,7 +44,8 @@ public class BatchCreatePseudoPrefab
         // 3. 遍历用户选中路径下的所有文件
         string[] files = Directory.GetFiles(selectedPath, "*.prefab", SearchOption.TopDirectoryOnly);
         string[] assetFiles = Directory.GetFiles(selectedPath, "*.asset", SearchOption.TopDirectoryOnly);
-        int tot = files.Length + assetFiles.Length;
+        string[] matFiles = Directory.GetFiles(selectedPath, "*.mat", SearchOption.TopDirectoryOnly);
+        int tot = files.Length + assetFiles.Length + matFiles.Length;
 
         int count = 0;
         EditorUtility.DisplayProgressBar("正在处理", "资源 0/" + tot.ToString(), 0);
@@ -86,14 +87,14 @@ public class BatchCreatePseudoPrefab
             count++;
         }
 
-        for (int i = 0; i < assetFiles.Length; i++)
+        for (int i = 0; i < assetFiles.Length + matFiles.Length; i++)
         {
             EditorUtility.DisplayProgressBar(
                 "正在处理",
                 "资源 " + (count + 1).ToString() + "/" + tot.ToString(),
                 (float)count / tot);
 
-            string file = assetFiles[i];
+            string file = i < assetFiles.Length ? assetFiles[i] : matFiles[i - assetFiles.Length];
             string standardizedPath = file.Replace('\\', '/');
             int index = standardizedPath.IndexOf("Assets/", System.StringComparison.OrdinalIgnoreCase);
 
