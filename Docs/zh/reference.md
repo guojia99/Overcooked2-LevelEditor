@@ -6,7 +6,7 @@
 
 #### 桌台
 
-在 `common01/prefabs/counters` 下。
+在 `common01/prefabs/counters` 下：
 
 - `Counter` - 普通桌台
   - `PseudoPrefabStub > pseudoPrefabSO` - 桌台外观，资源位置 `common01/pseudo_prefab_so/counters/Counter*SO`。
@@ -31,12 +31,19 @@
 - `Cooker` - 灶台
 - `FryingStation` - 油炸台
 - `Oven` - 烤箱
+- `Mixer` - 搅拌台
 - `ConveyorStation` - 传送带
   - `PseudoPrefabConveyorStub > conveySpeed` - 传送带速度。
 
+在 `common02/prefabs/counters` 下：
+
+- `SinkGlass` - 洗杯池
+- `Barbeque` - 烧烤架，`Blender` - 搅拌器
+- `GlassReturn` - 脏杯台
+
 #### 厨房器具
 
-在 `common01/prefabs/utensils` 下。
+在 `common01/prefabs/utensils` 下：
 
 - `Plate` - 盘
 - `CleanPlateStack` - 盘堆
@@ -45,6 +52,10 @@
 - `FryPan` - 煎锅，`Pot` - 煮锅，`FrierBasket` - 炸锅，`Steamer` - 蒸笼，`MixerBowl` - 搅拌碗
   - `PseudoPrefabCookingUtensilStub > capacity` - 可容纳食材数目。
   - `PseudoPrefabCookingUtensilStub > allowedIngredientSOs` - 允许烹饪的食材列表，资源位置 `common01/food/Ingredients`。
+
+在 `common02/prefabs/utensils` 下：
+
+- `Bellows` - 呼呼，`WaterGun` - 水枪，`Skewer` - 烧烤签，`BlenderCup` - 搅拌杯，`Glass` - 杯子，`CleanGlassStack` - 杯子堆
 
 #### 游戏机关
 
@@ -98,6 +109,7 @@
 - `Travelator` - 地面传送带
   
   - `PseudoPrefabTravelatorStub > speed` - 传送带速度。 
+  - 保证传送带位置略高于地面 Collider。
 
 在 `common02/prefabs/mechanisms` 下：
 
@@ -132,8 +144,9 @@
 - `common01/prefabs/art/space/Space_Door_Airlock_*` - 开关门
   - 交互按钮用无 Bool 的，踏板按钮用有 Bool 的。
   - 初始时关闭用 Close 的，初始时开启用 Open 的。
-- `PseudoPrefabMeshWithMaterial` - 多选模型或材质的物体
-  - 带有这个组件的场景物体可在 `PseudoPrefabMeshWithMaterialStub > pseudoPrefabSO` 更换模型，在 `PseudoPrefabMeshWithMaterialStub > materialSO` 更换材质。修改后点击 Tools - Reload Pseudo Assets 重新加载。例如 `common02/prefabs/art/dlc02_beach/plank` 可将 `pseudoPrefabSO` 更换为 `common02/pseudo_prefab_so/art/dlc02_beach/plank*`，`materialSO` 更换为 `common02/pseudo_prefab_so/art/dlc02_beach/mat_dlc2_planks_*`。
+- 多选模型或材质的物体
+  - 一些物体带有 `PseudoPrefabMeshWithMaterial` 组件。带有这个组件的场景物体可在 `PseudoPrefabMeshWithMaterialStub > pseudoPrefabSO` 更换模型，在 `PseudoPrefabMeshWithMaterialStub > materialSO` 更换材质。修改后点击 Tools - Reload Pseudo Assets 重新加载。例如 `common02/prefabs/art/dlc02_beach/plank` 可将 `pseudoPrefabSO` 更换为 `common02/pseudo_prefab_so/art/dlc02_beach/plank*`，`materialSO` 更换为 `common02/pseudo_prefab_so/art/dlc02_beach/mat_dlc2_planks_*`。
+  - 一些物体带有 `PseudoPrefabSOArray` 组件。带有这个组件的场景物体可在 `PseudoPrefabSOArray > pseudoPrefabSOs` 更换材质。修改后点击 Tools - Reload Pseudo Assets 重新加载。
 
 
 

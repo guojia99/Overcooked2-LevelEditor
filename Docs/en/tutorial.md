@@ -43,11 +43,12 @@ Assume you want to create a new level set named `xxx`, which contains a single l
 
 Assume that the level set `xxx` contains a single level, `xxx-1`.
 
-1. In the Project panel, select the scene file `s_xxx_1`. At the very bottom of the Inspector panel, select the first dropdown menu beside AssetBundle, choose New..., and enter `xxx/s_xxx_1`.
-2. In the Project panel, select the level set root directory `xxx`. At the very bottom of the Inspector panel, select the first dropdown menu beside AssetBundle, choose New..., and enter `xxx/info_xxx`.
-3. Click Tools – Build AssetBundles. (The first build may take some time.)
-4. You will see two files, `info_xxx` and `s_xxx_1`, in the project‘s folder `Assets/AssetBundles/xxx`. Copy them to the game directory `Overcooked! 2/BepInEx/plugins/OC2DIYLevel/levels/xxx`, and you can play the level in the game.
-5. You can now publish your level!
+1. Check the [Scene Checklist](#Scene-Checklist) before exporting.
+2. In the Project panel, select the scene file `s_xxx_1`. At the very bottom of the Inspector panel, select the first dropdown menu beside AssetBundle, choose New..., and enter `xxx/s_xxx_1`.
+3. In the Project panel, select the level set root directory `xxx`. At the very bottom of the Inspector panel, select the first dropdown menu beside AssetBundle, choose New..., and enter `xxx/info_xxx`.
+4. Click Tools – Build AssetBundles. (The first build may take some time.)
+5. You will see two files, `info_xxx` and `s_xxx_1`, in the project‘s folder `Assets/AssetBundles/xxx`. Copy them to the game directory `Overcooked! 2/BepInEx/plugins/OC2DIYLevel/levels/xxx`, and you can play the level in the game.
+6. You can now publish your level!
 
 
 
@@ -58,7 +59,7 @@ Assume that the level set `xxx` contains a single level, `xxx-1`.
 - Most gameobjects have a placeholder in the scene, and the actual object is temporarily loaded from the game's original bundles in the editor and the game. Click Tools – Toggle Prepare For Building to load or clear temporary objects. For example, the placeholder for Chef 1 is `Chefs/Player 1`, and the loaded temporary object is `Chefs/Player 1/player`.
 - __Clear temporary objects when saving and building the scene.__
 - __Do not modify temporary objects.__ Clicking on them in the Scene view may select the temporary object (or its child objects); you need to select the corresponding placeholder object in the Hierarchy view to perform actions such as moving or rotating.
-- __Do not place objects in the scene root.__ All objects must be placed under a parent object, such as `Design/Counters` in the template, or you may create an empty object to act as the parent.
+- <span id="No-Root">__Do not place objects in the scene root.__</span> All objects must be placed under a parent object, such as `Design/Counters` in the template, or you may create an empty object to act as the parent.
 - Drag objects from `common01/prefabs` in the Project panel into the scene or the Hierarchy.
 - To align objects to the grid, hold down Ctrl while moving them. The game's grid size is 1.2.
 - If temporary objects are not loaded correctly or if you have accidentally modified them, click Tools – Reload Pseudo Assets to reload them.
@@ -139,41 +140,57 @@ On the `PseudoPrefabManager > PseudoPrefabManagerStub` component:
 
 ##### Other Settings
 
-- Ceiling Height
+- <span id="Ceiling-Height">Ceiling Height</span>
 
   The `ceilingHeight` field in `CampaignGameEnvironment/KitchenLoaderManager` is the ceiling height. The default value is 2, which corresponds to the height of the chef's collider. If the level is not entirely flat, this value should be increased appropriately. For example, if there is a platform that raises the height by 1, it should be set to at least 3.
 
-- Dynamic Parenting
+- <span id="Dynamic-Parenting">Dynamic Parenting</span>
 
   The `levelinfo.disabledynamicparenting` field is the dynamic parenting option. It is checked by default. In levels containing moving or elevating platforms, this option should be unchecked.
 
-- `GridManager`
+- <span id="GridManager">`GridManager`</span>
 
   The `CampaignGameEnvironment/GridManager > QuadGridManager` component manages objects that are aligned to the grid such as counters (the game's grid size is 1.2). Set the `size` field to `(1.2, 1, 1.2)`, and the `origin` field to 0. The `gridHalfSize` field represents the number of grid cells for the half-width/half-length of the grid. The grid centers on the position of the `GridManager` object and extends `gridHalfSize` cells in each direction (for example, if `gridHalfSize` is `(1, 0, 1)`, the grid size is `3x1x3`). You should keep `gridHalfSize` as small as possible while ensuring the grid covers all counters. First, move the `GridManager` object to the grid cell at the center of all counters, then set `gridHalfSize` so that the grid covers all counters.
 
-- Collision
+- <span id="Collision">Collision</span>
 
   Add colliders under `Design/Collision`. __Please note that the colliders must be assigned to the correct object Layer: the floor should be `Ground` and the walls should be `Walls`.__
 
-- KillPlane
+- <span id="KillPlane">KillPlane</span>
 
   `CampaignGameEnvironment/KillPlane` is the respawn plane; players or objects that touch it will respawn or be destroyed. Set its position and scale, and set the `RespawnCollider > respawnType` field as follows: `Drowning` – drowning, `Fall Death` – falling, `Car` – knocked down (`Hit` is deprecated). If set to `Drowning`, select `WaterSplash_Particle_003_SO` (standard water splash) or `WaterSplash_Particle_004_alien_SO` (alien-themed green water splash) in the `PseudoPrefabManager > PseudoPrefabManagerStub > OnDeathEffectSO` field, then click Tools – Reload Pseudo Assets to load them. You can also add other KillPlanes by adding a `Collider` (check its `isTrigger` checkbox) and a `Respawn Collider` component to an empty object. See `s_oc1_story_6_3 > Design/KillPlanes` for reference.
 
 ##### Animation
 
-- Moving Ground
+- <span id="Moving-Ground">Moving Ground</span>
 
   See `s_test_level_5 > Design/Platforms` for reference. When there are moving grounds in the level, the `levelinfo.disabledynamicparenting` checkbox should be unchecked. __Each ground (including moving grounds and static grounds) should have an `ObjectContainer` component added to a container object, ensuring that the ground's `Collider` is under its hierarchy. If a moving ground has counters on it, a separate `QuadGridManager` component should be added to the container object to manage the grid on that ground.__
 
-- Moving Counters
+- <span id="Moving-Counters">Moving Counters</span>
 
-  See `s_oc1_story_4_1 > Design/Animated Objects/MovingCountersUp` for reference. __All moving counters must be under the hierarchy of an object named `Animated Objects`.
+  Counters that move relative to their associated `GridManager` (excluding static counters on moving grounds). See `s_oc1_story_4_1 > Design/Animated Objects/MovingCountersUp` for reference. __All moving counters must be under the hierarchy of an object named `Animated Objects`.__
 
 - Trigger
 
   Animations must be triggered simultaneously on the host and the client via Triggers. If an animation is very long, it should be divided into segments and triggered sequentially using multiple Triggers to prevent the animations on the host and the client from becoming out of sync. Similarly, looping animations should be triggered via Triggers at the start of each loop.
 
   [Trigger Components reference](reference.md#Trigger-Components)
+
+
+
+#### Scene Checklist
+
+- [Ceiling Height](#Ceiling-Height)
+- [Dynamic Parenting](#Dynamic-Parenting)
+- [GridManager](#GridManager)
+- [Collider layer](#Collision)
+- [KillPlane](#KillPlane)
+- [Set `ObjectContainer` and `GridManager` on moving grounds](#Moving-Ground)
+- [Set moving counters under `Animated Objects`](#Moving-Counters)
+- [Camera settings](#Camera)
+- [Lighting settings](#Lighting)
+- [Do not place objects in the scene root](#No-Root)
+- [Music and Sound Effects](#Music-and-Sound-Effects)
 
 
 

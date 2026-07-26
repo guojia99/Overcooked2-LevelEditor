@@ -43,11 +43,12 @@
 
 假设关卡集 `xxx` 包含 `xxx-1` 这一个关卡。
 
-1. 在 Project 面板选中场景文件 `s_xxx_1`，在 Inspector 面板最下方选择 AssetBundle 的第一个选项框，选择 New...，填入 `xxx/s_xxx_1`。
-2. 在 Project 面板选中关卡集根目录 `xxx`，在 Inspector 面板最下方选择 AssetBundle 的第一个选项框，选择 New...，填入 `xxx/info_xxx`。
-3. 点击 Tools - Build AssetBundles。（第一次构建可能需要较长时间）
-4. 在项目目录 `Assets/AssetBundles/xxx` 中可以看到 `info_xxx` 和 `s_xxx_1` 两个文件。将他们拷贝到游戏目录中 `Overcooked! 2/BepInEx/plugins/OC2DIYLevel/levels/xxx` 目录里即可游玩。
-5. 现在可以发布你的关卡了！
+1. 导出前，检查[场景检查列表](#场景检查列表)中的项目是否设置妥当。
+2. 在 Project 面板选中场景文件 `s_xxx_1`，在 Inspector 面板最下方选择 AssetBundle 的第一个选项框，选择 New...，填入 `xxx/s_xxx_1`。
+3. 在 Project 面板选中关卡集根目录 `xxx`，在 Inspector 面板最下方选择 AssetBundle 的第一个选项框，选择 New...，填入 `xxx/info_xxx`。
+4. 点击 Tools - Build AssetBundles。（第一次构建可能需要较长时间）
+5. 在项目目录 `Assets/AssetBundles/xxx` 中可以看到 `info_xxx` 和 `s_xxx_1` 两个文件。将他们拷贝到游戏目录中 `Overcooked! 2/BepInEx/plugins/OC2DIYLevel/levels/xxx` 目录里即可游玩。
+6. 现在可以发布你的关卡了！
 
 
 
@@ -58,7 +59,7 @@
 - 大部分游戏物体在场景里有一个占位物体，在编辑和游戏时从游戏原有资源包中临时加载。点击 Tools - Toggle Prepare For Building 可以加载 / 清除临时物体。例如厨师 1 的占位物体是 `Chefs/Player 1`，加载后的临时物体是 `Chefs/Player 1/player`。
 - __保存和构建场景时应清除临时物体。__
 - __不要操作临时物体。__在场景视图里点击可能会选择到临时物体（或其子物体），需要在 Hierarchy 视图里选中对应的占位物体进行移动等操作。
-- __不要将物体放在场景的根物体。__所有物体都需要放在至少有一层父级的位置，如模板里预设的 `Design/Counters` 等位置，也可以新建空物体作为父级。
+- <span id="No-Root">__不要将物体放在场景的根物体。__</span>所有物体都需要放在至少有一层父级的位置，如模板里预设的 `Design/Counters` 等位置，也可以新建空物体作为父级。
 - 在 Project 面板将 `common01/prefabs` 里的物体拖入场景或 Hierarchy。
 - 需要对齐网格的物体可以按住 Ctrl 进行移动。厨房网格的大小为 1.2。
 - 如果遇到没有正确加载临时物体或不小心操作了临时物体的情况，点击 Tools - Reload Pseudo Assets 重新加载。
@@ -117,7 +118,7 @@
 
 ##### 光照
 
-- 光照设置
+- <span id="光照设置">光照设置</span>
 
   在菜单栏 Window - Lighting - Settings 的 Environment 区设置 Skybox 和环境光，参考 `test` 和 `oc1_story` 两个关卡集中的场景。Realtime Global Illumination 和 Baked Global Illumination 不用勾选。
 
@@ -145,41 +146,57 @@
 
 ##### 其他设置
 
-- 天花板高度
+- <span id="天花板高度">天花板高度</span>
 
   `CampaignGameEnvironment/KitchenLoaderManager` 的 `ceilingHeight` 字段为天花板高度。默认为 2，即厨师碰撞体高度。若关卡不全是平地，应该适当增加。例如有一个会抬升 1 的平台，则至少设为 3。
 
-- 动态父物体挂载
+- <span id="动态父物体挂载">动态父物体挂载</span>
 
   `levelinfo.disabledynamicparenting` 是动态父物体挂载选项。默认勾选。在包含移动、升降平台的关卡，应取消勾选。
 
-- `GridManager`
+- <span id="GridManager">`GridManager`</span>
 
   `CampaignGameEnvironment/GridManager > QuadGridManager` 组件管理桌台等对齐网格的物体（厨房网格的大小为 1.2）。`size` 字段设置为 `(1.2, 1, 1.2)`，`origin` 字段设置为 0。`gridHalfSize` 为网格半长宽的格数。网格以 `GridManager` 物体所在位置为中心，向两边扩展 `gridHalfSize` 格（例如 `gridHalfSize` 为 `(1, 0, 1)`，网格格数为 `3x1x3`）。应该在保证网格覆盖所有桌台的前提下让 `gridHalfSize` 更小。先将 `GridManager` 物体移动到所有桌台位置的中心的格点，再设置 `gridHalfSize` 让网格覆盖所有桌台。
 
-- Collision
+- <span id="Collision">Collision</span>
 
   在 `Design/Collision` 下添加碰撞体。__注意碰撞体需要正确设置 Layer，地面为 `Ground`，墙为 `Walls`。__
 
-- KillPlane
+- <span id="KillPlane">KillPlane</span>
 
   `CampaignGameEnvironment/KillPlane` 是重生面，玩家或物体碰到了就会重生或消失。设置其位置和 Scale，设置上面的 `RespawnCollider > respawnType` 字段，`Drowning` - 落水，`Fall Death` - 坠落，`Car` - 倒地（`Hit` 废弃）。如果是 `Drowning`，在 `PseudoPrefabManager > PseudoPrefabManagerStub > OnDeathEffectSO` 选择 `WaterSplash_Particle_003_SO`（普通水花）或`WaterSplash_Particle_004_alien_SO`（外星主题的绿水水花），然后点击 Tools - Reload Pseudo Assets 载入。你也可以添加其他 KillPlane，只需要在空物体上添加 `Collider`（勾选 `isTrigger`）和 `Respawn Collider` 组件，参考 `s_oc1_story_6_3 > Design/KillPlanes`。
 
 ##### 动画
 
-- 移动地面
+- <span id="移动地面">移动地面</span>
 
   参考 `s_test_level_5 > Design/Platforms`。存在移动地面时，`levelinfo.disabledynamicparenting` 应取消勾选。__每个地面（包括移动地面和静止地面）都应该添加 `ObjectContainer` 组件，保证地面的 `Collider` 在这个物体的层级之下。如果移动地面上包含桌台，应该单独添加 `QuadGridManager` 组件管理这个地面上的网格。__
 
-- 移动桌台
+- <span id="移动桌台">移动桌台</span>
 
-  参考 `s_oc1_story_4_1 > Design/Animated Objects/MovingCountersUp`。__所有移动桌台必须在某个名为 `Animated Objects` 的物体的层级之下。__
+  与所属 `GridManager` 之间有相对位移的桌台（移动地面上的固定桌台不属于此类）。参考 `s_oc1_story_4_1 > Design/Animated Objects/MovingCountersUp`。__所有移动桌台必须在某个名为 `Animated Objects` 的物体的层级之下。__
 
 - Trigger
 
   动画需要通过 Trigger 在主客机同步触发。如果是一个很长的动画，应该进行分段，用多个 Trigger 依次触发，防止主客机动画错位。同理循环动画应该在每次循环时通过 Trigger 触发。
 
   [Trigger 组件说明](reference.md#Trigger-组件)
+
+
+
+#### 场景检查列表
+
+- [天花板高度](#天花板高度)
+- [动态父物体挂载](#动态父物体挂载)
+- [GridManager](#GridManager)
+- [Collider layer](#Collision)
+- [KillPlane](#KillPlane)
+- [移动地面设置 `ObjectContainer` 和 `GridManager`](#移动地面)
+- [移动桌台在 `Animated Objects` 的层级之下](#移动桌台)
+- [相机设置](#相机)
+- [光照设置](#光照设置)
+- [不要将物体放在场景的根物体](#No-Root)
+- [音乐和音效](#音乐和音效)
 
 
 

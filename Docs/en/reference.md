@@ -6,7 +6,7 @@ If you have any questions regarding the usage of any fields, it may be helpful t
 
 #### Counters
 
-In the directory `common01/prefabs/counters`.
+In the directory `common01/prefabs/counters`:
 
 - `Counter` - Regular counter
   - `PseudoPrefabStub > pseudoPrefabSO` - Counter appearance. The assets are located in the directory `common01/pseudo_prefab_so/counters/Counter*SO`.
@@ -31,12 +31,19 @@ In the directory `common01/prefabs/counters`.
 - `Cooker` - Cooker
 - `FryingStation` - Frying station
 - `Oven` - Oven
+- `Mixer` - Mixer
 - `ConveyorStation` - Conveyor belt
   - `PseudoPrefabConveyorStub > conveySpeed` - Conveyor belt speed.
 
+In the directory `common02/prefabs/counters`:
+
+- `SinkGlass` - Sink for glasses
+- `Barbeque`, `Blender`
+- `GlassReturn` - Plate return station for glasses
+
 #### Utensils
 
-In the directory `common01/prefabs/utensils`.
+In the directory `common01/prefabs/utensils`:
 
 - `Plate` - Plate
 - `CleanPlateStack` - Stack of clean plates
@@ -45,6 +52,11 @@ In the directory `common01/prefabs/utensils`.
 - `FryPan`, `Pot`, `FrierBasket`, `Steamer`, `MixerBowl` - Cooking utensils
   - `PseudoPrefabCookingUtensilStub > capacity` - The number of ingredients that can be placed in the utensil.
   - `PseudoPrefabCookingUtensilStub > allowedIngredientSOs` - The list of ingredients allowed for this utensil. The assets are located in the directory `common01/food/Ingredients`.
+
+In the directory `common02/prefabs/utensils`:
+
+- `Bellows`, `WaterGun`, `Skewer`, `BlenderCup`, `Glass`
+- `CleanGlassStack` - Stack of clean glasses
 
 #### Mechanisms
 
@@ -98,6 +110,7 @@ In the directory `common01/prefabs/mechanisms`:
 - `Travelator` - Travelator on the ground
   
   - `PseudoPrefabTravelatorStub > speed` - Travelator speed.
+  - Ensure that the travelator is positioned slightly above the ground Collider.
 
 In the directory `common02/prefabs/mechanisms`:
 
@@ -133,7 +146,8 @@ In the directory `common*/prefabs/art`, organized into subdirectories by theme.
   - Use prefabs without "Bool" in the name for interactive switches, and prefabs with "Bool" for pressure switches.
   - Use prefabs with "Close" in the name for initially closed doors, and prefabs with "Open" for initially opened doors.
 - `PseudoPrefabMeshWithMaterial` - Objects with optional models or materials
-  - For environment objects with this component, you can change the model in `PseudoPrefabMeshWithMaterialStub > pseudoPrefabSO` and change the material in `PseudoPrefabMeshWithMaterialStub > materialSO`. After modifying, click Tools - Reload Pseudo Assets to reload. For example, for `common02/prefabs/art/dlc02_beach/plank`, you can change `pseudoPrefabSO` to `common02/pseudo_prefab_so/art/dlc02_beach/plank*` and change `materialSO` to `common02/pseudo_prefab_so/art/dlc02_beach/mat_dlc2_planks_*`.
+  - Some prefabs has a `PseudoPrefabMeshWithMaterial` component. For environment objects with this component, you can change the model in `PseudoPrefabMeshWithMaterialStub > pseudoPrefabSO` and change the material in `PseudoPrefabMeshWithMaterialStub > materialSO`. After modifying, click Tools - Reload Pseudo Assets to reload. For example, for `common02/prefabs/art/dlc02_beach/plank`, you can change `pseudoPrefabSO` to `common02/pseudo_prefab_so/art/dlc02_beach/plank*` and change `materialSO` to `common02/pseudo_prefab_so/art/dlc02_beach/mat_dlc2_planks_*`.
+  - Some prefabs has a `PseudoPrefabSOArray` component. For environment objects with this component, you can change the material in `PseudoPrefabSOArray > pseudoPrefabSOs`. After modifying, click Tools - Reload Pseudo Assets to reload.
 
 
 
