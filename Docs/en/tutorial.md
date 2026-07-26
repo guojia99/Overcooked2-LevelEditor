@@ -17,7 +17,7 @@
 
 4. Open the project in Unity. The editor version is 2017.4.8f1.
 
-5. Check the Console panel and fix any remaining compilation errors (there should not be any).
+5. Check the Console window and fix any remaining compilation errors (there should not be any).
 
 6. Open the scene `LevelSets/oc1_story/scenes/s_oc1_story_1_1` (or any other level scene). Click Play to run the level (controls: `W` `A` `S` `D` + `space` + `G` `H` `J`).
 
@@ -44,8 +44,8 @@ Assume you want to create a new level set named `xxx`, which contains a single l
 Assume that the level set `xxx` contains a single level, `xxx-1`.
 
 1. Check the [Scene Checklist](#Scene-Checklist) before exporting.
-2. In the Project panel, select the scene file `s_xxx_1`. At the very bottom of the Inspector panel, select the first dropdown menu beside AssetBundle, choose New..., and enter `xxx/s_xxx_1`.
-3. In the Project panel, select the level set root directory `xxx`. At the very bottom of the Inspector panel, select the first dropdown menu beside AssetBundle, choose New..., and enter `xxx/info_xxx`.
+2. In the Project window, select the scene file `s_xxx_1`. At the very bottom of the Inspector window, select the first dropdown menu beside AssetBundle, choose New..., and enter `xxx/s_xxx_1`.
+3. In the Project window, select the level set root directory `xxx`. At the very bottom of the Inspector window, select the first dropdown menu beside AssetBundle, choose New..., and enter `xxx/info_xxx`.
 4. Click Tools – Build AssetBundles. (The first build may take some time.)
 5. You will see two files, `info_xxx` and `s_xxx_1`, in the project‘s folder `Assets/AssetBundles/xxx`. Copy them to the game directory `Overcooked! 2/BepInEx/plugins/OC2DIYLevel/levels/xxx`, and you can play the level in the game.
 6. You can now publish your level!
@@ -56,11 +56,11 @@ Assume that the level set `xxx` contains a single level, `xxx-1`.
 
 ##### General Instructions
 
-- Most gameobjects have a placeholder in the scene, and the actual object is temporarily loaded from the game's original bundles in the editor and the game. Click Tools – Toggle Prepare For Building to load or clear temporary objects. For example, the placeholder for Chef 1 is `Chefs/Player 1`, and the loaded temporary object is `Chefs/Player 1/player`.
+- Most GameObjects have a placeholder in the scene, and the actual object is temporarily loaded from the game's original bundles in the editor and the game. Click Tools – Toggle Prepare For Building to load or clear temporary objects. For example, the placeholder for Chef 1 is `Chefs/Player 1`, and the loaded temporary object is `Chefs/Player 1/player`.
 - __Clear temporary objects when saving and building the scene.__
 - __Do not modify temporary objects.__ Clicking on them in the Scene view may select the temporary object (or its child objects); you need to select the corresponding placeholder object in the Hierarchy view to perform actions such as moving or rotating.
 - <span id="No-Root">__Do not place objects in the scene root.__</span> All objects must be placed under a parent object, such as `Design/Counters` in the template, or you may create an empty object to act as the parent.
-- Drag objects from `common01/prefabs` in the Project panel into the scene or the Hierarchy.
+- Drag objects from `common01/prefabs` in the Project window into the scene or the Hierarchy.
 - To align objects to the grid, hold down Ctrl while moving them. The game's grid size is 1.2.
 - If temporary objects are not loaded correctly or if you have accidentally modified them, click Tools – Reload Pseudo Assets to reload them.
 
@@ -128,7 +128,7 @@ On the `PseudoPrefabManager > PseudoPrefabManagerStub` component:
 
 - The `inlevelAmbiences` field is used to add level ambient sound effect tags. See the scenes in the `test` and `oc1_story` level sets for reference.
 
-- The `audioDirectorySOs` field is used to add sound effect directories. The assets are located in the `common02/pseudo_prefab_so/audio/AudioDirectories` directory. If an ambient sound effect tag or certain environment objects use a tag not listed in `audioDirectorySOs`, you will see the following error in the Console panel:
+- The `audioDirectorySOs` field is used to add <span id="sound-effect-directories">sound effect directories</span>. The assets are located in the `common02/pseudo_prefab_so/audio/AudioDirectories` directory. If an ambient sound effect tag or certain environment objects use a tag not listed in `audioDirectorySOs`, you will see the following error in the Console window:
 
   ```
   ArgumentOutOfRangeException: Argument is out of range.
@@ -175,6 +175,10 @@ On the `PseudoPrefabManager > PseudoPrefabManagerStub` component:
   Animations must be triggered simultaneously on the host and the client via Triggers. If an animation is very long, it should be divided into segments and triggered sequentially using multiple Triggers to prevent the animations on the host and the client from becoming out of sync. Similarly, looping animations should be triggered via Triggers at the start of each loop.
 
   [Trigger Components reference](reference.md#Trigger-Components)
+  
+- Add Animation Sound Effects
+
+  Add an `AnimatorAudioComponent` component on the GameObject with the `Animator`; select the animation clip that you want to add sound effects to in the Animation window, and add an Animation Event on the Animation timeline; select `AudioTrigger(String)` for the Event function and enter the sound effect string for the Event parameter. All sound effect tags can be found in `Assets/Scripts/Assembly-CSharp/GameOneShotAudioTag.cs`. You need to add the corresponding [sound effect directories](#sound-effect-directories) to `PseudoPrefabManager > PseudoPrefabManagerStub > audioDirectorySOs`.
 
 
 

@@ -58,7 +58,7 @@
 
 - 大部分游戏物体在场景里有一个占位物体，在编辑和游戏时从游戏原有资源包中临时加载。点击 Tools - Toggle Prepare For Building 可以加载 / 清除临时物体。例如厨师 1 的占位物体是 `Chefs/Player 1`，加载后的临时物体是 `Chefs/Player 1/player`。
 - __保存和构建场景时应清除临时物体。__
-- __不要操作临时物体。__在场景视图里点击可能会选择到临时物体（或其子物体），需要在 Hierarchy 视图里选中对应的占位物体进行移动等操作。
+- __不要操作临时物体。__在场景视图里点击可能会选择到临时物体（或其子物体），需要在 Hierarchy 窗口里选中对应的占位物体进行移动等操作。
 - <span id="No-Root">__不要将物体放在场景的根物体。__</span>所有物体都需要放在至少有一层父级的位置，如模板里预设的 `Design/Counters` 等位置，也可以新建空物体作为父级。
 - 在 Project 面板将 `common01/prefabs` 里的物体拖入场景或 Hierarchy。
 - 需要对齐网格的物体可以按住 Ctrl 进行移动。厨房网格的大小为 1.2。
@@ -134,7 +134,7 @@
 
 - `inlevelAmbiences` 字段添加关卡氛围音效 tag，参考 `test` 和 `oc1_story` 两个关卡集中的场景。
 
-- `audioDirectorySOs` 字段添加音效集资源，资源位置在 `common02/pseudo_prefab_so/audio/AudioDirectories` 目录。如果氛围音效 tag 或者一些场景物体使用了不在 `audioDirectorySOs` 列表里的 tag，会看到报错
+- `audioDirectorySOs` 字段添加<span id="音效集资源">音效集资源</span>，资源位置在 `common02/pseudo_prefab_so/audio/AudioDirectories` 目录。如果氛围音效 tag 或者一些场景物体使用了不在 `audioDirectorySOs` 列表里的 tag，会看到报错
 
   ```
   ArgumentOutOfRangeException: Argument is out of range.
@@ -181,6 +181,10 @@
   动画需要通过 Trigger 在主客机同步触发。如果是一个很长的动画，应该进行分段，用多个 Trigger 依次触发，防止主客机动画错位。同理循环动画应该在每次循环时通过 Trigger 触发。
 
   [Trigger 组件说明](reference.md#Trigger-组件)
+  
+- 添加动画音效
+
+  在 `Animator` 组件所在物体上添加 `AnimatorAudioComponent` 组件；在 Animation 窗口中选择要添加音效的动画，在时间轴上添加 Animation Event；Event 函数选择 `AudioTrigger(String)`，Event 参数填写音效 tag 字符串。所有音效 tag 可以在 `Assets/Scripts/Assembly-CSharp/GameOneShotAudioTag.cs` 中找到。需要在 `PseudoPrefabManager > PseudoPrefabManagerStub > audioDirectorySOs` 字段添加[音效集资源](#音效集资源)。
 
 
 
