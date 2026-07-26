@@ -21,6 +21,8 @@ GameObject:
   - component: {fileID: 4207234589475524}
   - component: {fileID: 114796911976942958}
   - component: {fileID: 114870164710010560}
+  - component: {fileID: 114675145034069878}
+  - component: {fileID: 114380219560835354}
   m_Layer: 0
   m_Name: Scooter_02
   m_TagString: Untagged
@@ -41,6 +43,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114380219560835354
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1954835634789390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0232b03a35f0cc74c8326feb4f5b79cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pseudoPrefabSOs:
+  - {fileID: 11400000, guid: 2e490fa4158a27040a1928538fcecd2f, type: 2}
+--- !u!114 &114675145034069878
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1954835634789390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b19728b6e0dfe44baf2f80df9bfc1e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabTag: Scooter_02
 --- !u!114 &114796911976942958
 MonoBehaviour:
   m_ObjectHideFlags: 1

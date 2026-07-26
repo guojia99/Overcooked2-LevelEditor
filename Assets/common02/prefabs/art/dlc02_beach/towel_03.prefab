@@ -19,8 +19,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4888922318777234}
-  - component: {fileID: 114967254814797814}
-  - component: {fileID: 114591845167366416}
+  - component: {fileID: 114219424810520854}
+  - component: {fileID: 114808555266882206}
   m_Layer: 0
   m_Name: towel_03
   m_TagString: Untagged
@@ -41,7 +41,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114591845167366416
+--- !u!114 &114219424810520854
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -49,19 +49,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1243161874137504}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d58b99f9c4313714e9c4b11f1534ae6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  childGameObject: {fileID: 0}
---- !u!114 &114967254814797814
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1243161874137504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f66cc8b36034eb4c8eec31e1994e471, type: 3}
+  m_Script: {fileID: 11500000, guid: 112ba37cd9beca344a6d81d8d70ce245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pseudoPrefabSO: {fileID: 11400000, guid: 2ba6be0c19f3f14488fcb3498c2fd801, type: 2}
+  materialSO: {fileID: 11400000, guid: e4d88900be6b9f646a1905e6a2fe1d2f, type: 2}
+--- !u!114 &114808555266882206
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1243161874137504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5a5966234bbe045815f7430d55e69d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  childGameObject: {fileID: 0}

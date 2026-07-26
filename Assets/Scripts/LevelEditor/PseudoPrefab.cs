@@ -439,9 +439,14 @@ namespace LevelEditor
                         break;
                     }
 
-                case "crate_raft_x2_01":
+                case "crate_raft":
                     {
-                        childGameObject.GetComponent<EditorGridSnap>().enabled = false;
+                        if (childGameObject.GetComponent<EditorGridSnap>() != null)
+                            childGameObject.GetComponent<EditorGridSnap>().enabled = false;
+                        Material mat = PseudoPrefabManager.LoadAsset<Material>(GetComponent<PseudoPrefabSOArray>().pseudoPrefabSOs[0]);
+                        Renderer renderer = childGameObject.GetComponent<Renderer>();
+                        Material mat1 = renderer.sharedMaterials[1];
+                        renderer.sharedMaterials = new Material[] { mat, mat1 };
                         break;
                     }
 
@@ -464,9 +469,29 @@ namespace LevelEditor
                         matSO.bundleName = "bundle248";
                         matSO.assetPath = "Assets\\downloadablecontent\\dlc05\\dlc_assets\\models\\dressing assets\\materials\\mat_dlc5_foliage_01.mat".Replace("\\", "/");
                         Material mat0 = PseudoPrefabManager.LoadAsset<Material>(matSO);
-                        childGameObject.transform.Find("m_dlc5_vines_A").GetComponent<Renderer>().materials = new Material[2] { mat0, mat1 };
-                        childGameObject.transform.Find("m_dlc5_vines_B").GetComponent<Renderer>().materials = new Material[2] { mat0, mat1 };
+                        childGameObject.transform.Find("m_dlc5_vines_A").GetComponent<Renderer>().sharedMaterials = new Material[2] { mat0, mat1 };
+                        childGameObject.transform.Find("m_dlc5_vines_B").GetComponent<Renderer>().sharedMaterials = new Material[2] { mat0, mat1 };
                         DestroyImmediate(matSO);
+                        break;
+                    }
+
+                case "Buoy_01":
+                    {
+                        PseudoPrefabSO[] matSOs = GetComponent<PseudoPrefabSOArray>().pseudoPrefabSOs;
+                        Material mat0 = PseudoPrefabManager.LoadAsset<Material>(matSOs[0]);
+                        Material mat1 = PseudoPrefabManager.LoadAsset<Material>(matSOs[1]);
+                        childGameObject.transform.Find("Buoy_01/Buoy_01").GetComponent<Renderer>().sharedMaterial = mat0;
+                        childGameObject.transform.Find("Buoy_01/ripple_1 (11)").GetComponent<Renderer>().sharedMaterial = mat1;
+                        break;
+                    }
+
+                case "Scooter_02":
+                    {
+                        PseudoPrefabSO[] matSOs = GetComponent<PseudoPrefabSOArray>().pseudoPrefabSOs;
+                        Material mat = PseudoPrefabManager.LoadAsset<Material>(matSOs[0]);
+                        foreach (Renderer renderer in childGameObject.GetComponentsInChildren<Renderer>())
+                            if (renderer.gameObject.name.StartsWith("m_dlc2_scooter"))
+                                renderer.sharedMaterial = mat;
                         break;
                     }
 

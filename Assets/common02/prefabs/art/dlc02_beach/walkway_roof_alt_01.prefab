@@ -19,8 +19,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4243765417747096}
-  - component: {fileID: 114520687622397290}
-  - component: {fileID: 114737080907596586}
+  - component: {fileID: 114727371331405560}
+  - component: {fileID: 114452722665504182}
   m_Layer: 0
   m_Name: walkway_roof_alt_01
   m_TagString: Untagged
@@ -41,7 +41,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114520687622397290
+--- !u!114 &114452722665504182
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -49,19 +49,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1914409416000044}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f66cc8b36034eb4c8eec31e1994e471, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pseudoPrefabSO: {fileID: 11400000, guid: a297f19ba2018fe4f93fe866f57423cd, type: 2}
---- !u!114 &114737080907596586
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1914409416000044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d58b99f9c4313714e9c4b11f1534ae6f, type: 3}
+  m_Script: {fileID: 11500000, guid: 0b5a5966234bbe045815f7430d55e69d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   childGameObject: {fileID: 0}
+--- !u!114 &114727371331405560
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1914409416000044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 112ba37cd9beca344a6d81d8d70ce245, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pseudoPrefabSO: {fileID: 11400000, guid: a297f19ba2018fe4f93fe866f57423cd, type: 2}
+  materialSO: {fileID: 11400000, guid: c39c7caeb3407eb42946f84529f8b9b5, type: 2}

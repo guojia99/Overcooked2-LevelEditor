@@ -21,6 +21,8 @@ GameObject:
   - component: {fileID: 4650296732067658}
   - component: {fileID: 114907206336460032}
   - component: {fileID: 114800184593445600}
+  - component: {fileID: 114850400789041036}
+  - component: {fileID: 114656766594225502}
   m_Layer: 0
   m_Name: Buoy_01
   m_TagString: Untagged
@@ -41,6 +43,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114656766594225502
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1668192568130202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b19728b6e0dfe44baf2f80df9bfc1e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabTag: Buoy_01
 --- !u!114 &114800184593445600
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -53,6 +67,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childGameObject: {fileID: 0}
+--- !u!114 &114850400789041036
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1668192568130202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0232b03a35f0cc74c8326feb4f5b79cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pseudoPrefabSOs:
+  - {fileID: 11400000, guid: 1c1445ffd1e7d5942a56e4ee9bcf4f4a, type: 2}
+  - {fileID: 11400000, guid: beb1145c7dd4c8846be0613b5a8b2d93, type: 2}
 --- !u!114 &114907206336460032
 MonoBehaviour:
   m_ObjectHideFlags: 1

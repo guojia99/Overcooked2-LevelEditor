@@ -19,8 +19,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4363857848386232}
-  - component: {fileID: 114650592590484754}
-  - component: {fileID: 114556418855097594}
+  - component: {fileID: 114363282694658808}
+  - component: {fileID: 114842472556074876}
   m_Layer: 0
   m_Name: bucket_01
   m_TagString: Untagged
@@ -41,7 +41,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114556418855097594
+--- !u!114 &114363282694658808
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -49,19 +49,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1749732189161804}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d58b99f9c4313714e9c4b11f1534ae6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  childGameObject: {fileID: 0}
---- !u!114 &114650592590484754
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1749732189161804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f66cc8b36034eb4c8eec31e1994e471, type: 3}
+  m_Script: {fileID: 11500000, guid: 112ba37cd9beca344a6d81d8d70ce245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pseudoPrefabSO: {fileID: 11400000, guid: c3a25b1cd55a63340a679edeeccd24f0, type: 2}
+  materialSO: {fileID: 11400000, guid: 7701a7cdcd8af664b8b1d82c92cc9296, type: 2}
+--- !u!114 &114842472556074876
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1749732189161804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5a5966234bbe045815f7430d55e69d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  childGameObject: {fileID: 0}
