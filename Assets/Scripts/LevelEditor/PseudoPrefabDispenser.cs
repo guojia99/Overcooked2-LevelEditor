@@ -54,6 +54,8 @@ namespace LevelEditor
                 }
             }
 
+            if (childGameObject.GetComponent<Backpack>() != null) return;
+
             // set the dispenser icon
             GameObject itemPrefab = pickupItemSpawner.m_itemPrefab;
             WorkableItem workableItem = itemPrefab.GetComponent<WorkableItem>();

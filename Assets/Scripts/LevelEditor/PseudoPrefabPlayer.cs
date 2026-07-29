@@ -13,6 +13,11 @@ namespace LevelEditor
             PseudoPrefabPlayerStub playerStub = (PseudoPrefabPlayerStub)stub;
             PlayerIDProvider playerIDProvider = childGameObject.GetComponent<PlayerIDProvider>();
             playerIDProvider.OverridePlayerId((PlayerInputLookup.Player)playerStub.playerID);
+
+            if (childGameObject.GetComponent<HatMeshVisibility>() != null && playerStub.hatVisState != PseudoPrefabPlayerStub.HatVisState.None)
+            {
+                childGameObject.GetComponent<HatMeshVisibility>().m_initialVisState = (HatMeshVisibility.VisState)playerStub.hatVisState;
+            }
         }
     }
 }

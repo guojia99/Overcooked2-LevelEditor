@@ -46,6 +46,11 @@ namespace LevelEditor
                 newRecipeMatchList.m_includeLists = new RecipeMatchList[] { theRecipeMatchList };
                 newRecipeMatchList.m_cookingSteps = new CookingStepData[0];
 
+                if (config.allCookingSteps != null && config.allCookingSteps.Length > 0)
+                {
+                    newRecipeMatchList.m_cookingSteps = config.allCookingSteps.Select(x => RecipeHelper.GetCookingStepData(x)).ToArray();
+                }
+
                 List<OrderDefinitionNode> newRecipeMatchListItems = new List<OrderDefinitionNode>();
                 
                 if (config.optionalRecipeMatchListItems != null && config.optionalRecipeMatchListItems.Length > 0)
@@ -55,7 +60,7 @@ namespace LevelEditor
 
                 if (config.allIngredients != null && config.allIngredients.Length > 0)
                 {
-                    newRecipeMatchListItems.AddRange(config.allIngredients.Select(x => RecipeHelper.GetIngredientOrderNode(x) as OrderDefinitionNode));
+                    newRecipeMatchListItems.AddRange(config.allIngredients.Select(x => RecipeHelper.GetIngredientOrItemOrderNode(x)));
                 }
 
                 newRecipeMatchListItems.AddRange(recipeList.m_recipes.Select(x => x.m_order));

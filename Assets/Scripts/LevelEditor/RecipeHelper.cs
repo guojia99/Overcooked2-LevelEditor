@@ -212,8 +212,44 @@ namespace LevelEditor
             else
             {
                 PreparationContainer preparationContainer = ingredient.GetComponent<PreparationContainer>();
-                return preparationContainer.m_ingredientOrderNode;
+                if (preparationContainer != null)
+                {
+                    return preparationContainer.m_ingredientOrderNode;
+                }
+                else
+                {
+                    return null;
+                }
             }
+        }
+
+        public static ItemOrderNode GetItemOrderNode(PseudoPrefabSO pseudoPrefabSO)
+        {
+            GameObject item = PseudoPrefabManager.LoadAsset<GameObject>(pseudoPrefabSO);
+            while (item.GetComponent<WorkableItem>() != null)
+                item = item.GetComponent<WorkableItem>().m_nextPrefab;
+            ItemPropertiesComponent itemPropertiesComponent = item.GetComponent<ItemPropertiesComponent>();
+            if (itemPropertiesComponent != null)
+            {
+                return (ItemOrderNode)itemPropertiesComponent.GetType()
+                    .GetField("m_itemDefinition", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                    .GetValue(itemPropertiesComponent);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public static OrderDefinitionNode GetIngredientOrItemOrderNode(PseudoPrefabSO pseudoPrefabSO)
+        {
+            OrderDefinitionNode ingredientOrderNode = GetIngredientOrderNode(pseudoPrefabSO);
+            return ingredientOrderNode ?? GetItemOrderNode(pseudoPrefabSO);
+        }
+
+        public static CookingStepData GetCookingStepData(PseudoPrefabSO pseudoPrefabSO)
+        {
+            return PseudoPrefabManager.LoadAsset<CookingStepData>(pseudoPrefabSO);
         }
     }
 }

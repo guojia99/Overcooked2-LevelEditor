@@ -17,6 +17,24 @@ namespace LevelEditor
             IngredientContainer ingredientContainer = childGameObject.GetComponent<IngredientContainer>();
             ingredientContainer.m_capacity = cookingUtensilStub.capacity;
 
+            SpecificPseudoPrefabTag specificPseudoPrefabTag = GetComponent<SpecificPseudoPrefabTag>();
+            if (specificPseudoPrefabTag != null && !string.IsNullOrEmpty(specificPseudoPrefabTag.prefabTag))
+            {
+                if (specificPseudoPrefabTag.prefabTag == "ToastingFork")
+                {
+                    BoxCollider boxCollider = childGameObject.GetComponents<BoxCollider>()[0];
+                    boxCollider.size = new Vector3(1f, 0.1f, 0.4f);
+                }
+            }
+
+            if (cookingUtensilStub.allowedCookingStationTypes != null &&
+                cookingUtensilStub.allowedCookingStationTypes.Length > 0 &&
+                childGameObject.GetComponent<CookingHandler>() != null)
+            {
+                MultiCookingStationTypes multiCookingStationTypes = childGameObject.AddComponent<MultiCookingStationTypes>();
+                multiCookingStationTypes.cookingStationTypes = cookingUtensilStub.allowedCookingStationTypes.Select(x => (CookingStationType)x).ToArray();
+            }
+
             var contentsCosmeticDecisions = childGameObject.RequestComponentRecursive<ContentsCosmeticDecisions>();
             if (contentsCosmeticDecisions != null)
             {

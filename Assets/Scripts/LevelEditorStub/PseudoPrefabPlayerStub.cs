@@ -8,6 +8,7 @@ namespace LevelEditorStub
     public class PseudoPrefabPlayerStub : PseudoPrefabStub {
 
         [SerializeField] public Player playerID = Player.Count;
+        [SerializeField] public HatVisState hatVisState = HatVisState.None;
 
         public enum Player
         {
@@ -23,6 +24,16 @@ namespace LevelEditorStub
             Ten = 9,
             Eleven = 10,
             Count = 11
+        }
+
+        public enum HatVisState
+        {
+            None,
+            Deprecated‌_Cap,
+            Deprecated‌_Tall,
+            Fancy,
+            Festive,
+            Baseball
         }
     }
 }
