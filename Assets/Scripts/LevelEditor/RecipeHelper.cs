@@ -363,5 +363,10 @@ namespace LevelEditor
                 }
             }
         }
+
+        public static bool IsEmpty(this Array array)
+        {
+            return array == null || array.Length == 0;
+        }
     }
 }

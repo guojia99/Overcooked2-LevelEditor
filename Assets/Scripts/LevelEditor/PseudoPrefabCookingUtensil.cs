@@ -27,8 +27,7 @@ namespace LevelEditor
                 }
             }
 
-            if (cookingUtensilStub.allowedCookingStationTypes != null &&
-                cookingUtensilStub.allowedCookingStationTypes.Length > 0 &&
+            if (!cookingUtensilStub.allowedCookingStationTypes.IsEmpty() &&
                 childGameObject.GetComponent<CookingHandler>() != null)
             {
                 MultiCookingStationTypes multiCookingStationTypes = childGameObject.AddComponent<MultiCookingStationTypes>();
@@ -45,7 +44,7 @@ namespace LevelEditor
             if (childGameObject.GetComponent<MixableContainer>() != null)
             {
                 MixableContainer mixableContainer = childGameObject.GetComponent<MixableContainer>();
-                if (cookingUtensilStub.allowedIngredientSOs != null && cookingUtensilStub.allowedIngredientSOs.Length > 0)
+                if (!cookingUtensilStub.allowedIngredientSOs.IsEmpty())
                 {
                     mixableContainer.m_ApprovedIngredients = cookingUtensilStub.allowedIngredientSOs
                         .Select(x => RecipeHelper.GetIngredientOrderNode(x))
@@ -53,7 +52,7 @@ namespace LevelEditor
                 }
             }
 
-            else if (cookingUtensilStub.allowedIngredientSOs != null && cookingUtensilStub.allowedIngredientSOs.Length > 0)
+            else if (!cookingUtensilStub.allowedIngredientSOs.IsEmpty())
             {
                 CookableContainer cookableContainer = childGameObject.GetComponent<CookableContainer>();
                 OrderToPrefabLookup oldLookup = cookableContainer.m_approvedContentsList;

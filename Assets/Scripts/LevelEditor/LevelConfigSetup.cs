@@ -37,28 +37,36 @@ namespace LevelEditor
             configTemplate.m_rounds[0].m_recipes = recipeList;
 
             if (recipes.Any(x => x is CustomRecipeSO) ||
-                config.optionalRecipeMatchListItems != null && config.optionalRecipeMatchListItems.Length > 0 ||
-                config.allIngredients != null && config.allIngredients.Length > 0)
+                !config.optionalRecipeMatchListItems.IsEmpty() ||
+                !config.allIngredients.IsEmpty() ||
+                config.excludeStoryRecipeMatchList ||
+                !config.includeRecipeMatchLists.IsEmpty() ||
+                !config.allCookingSteps.IsEmpty())
             {
                 RecipeMatchList theRecipeMatchList = configTemplate.m_recipeMatchingList;
                 RecipeMatchList newRecipeMatchList = ScriptableObject.CreateInstance<RecipeMatchList>();
                 newRecipeMatchList.name = "RecipeMatchList_" + config.name;
-                newRecipeMatchList.m_includeLists = new RecipeMatchList[] { theRecipeMatchList };
+                List<RecipeMatchList> m_includeLists = new List<RecipeMatchList>();
+                if (!config.excludeStoryRecipeMatchList)
+                    m_includeLists.Add(theRecipeMatchList);
+                if (!config.includeRecipeMatchLists.IsEmpty())
+                    m_includeLists.AddRange(config.includeRecipeMatchLists.Select(x => PseudoPrefabManager.LoadAsset<RecipeMatchList>(x)));
+                newRecipeMatchList.m_includeLists = m_includeLists.ToArray();
                 newRecipeMatchList.m_cookingSteps = new CookingStepData[0];
 
-                if (config.allCookingSteps != null && config.allCookingSteps.Length > 0)
+                if (!config.allCookingSteps.IsEmpty())
                 {
                     newRecipeMatchList.m_cookingSteps = config.allCookingSteps.Select(x => RecipeHelper.GetCookingStepData(x)).ToArray();
                 }
 
                 List<OrderDefinitionNode> newRecipeMatchListItems = new List<OrderDefinitionNode>();
                 
-                if (config.optionalRecipeMatchListItems != null && config.optionalRecipeMatchListItems.Length > 0)
+                if (!config.optionalRecipeMatchListItems.IsEmpty())
                 {
                     newRecipeMatchListItems.AddRange(config.optionalRecipeMatchListItems.Select(x => RecipeHelper.GetOptionalRecipeNode(x)));
                 }
 
-                if (config.allIngredients != null && config.allIngredients.Length > 0)
+                if (!config.allIngredients.IsEmpty())
                 {
                     newRecipeMatchListItems.AddRange(config.allIngredients.Select(x => RecipeHelper.GetIngredientOrItemOrderNode(x)));
                 }

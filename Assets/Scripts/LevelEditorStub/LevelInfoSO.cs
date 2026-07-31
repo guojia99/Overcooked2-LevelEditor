@@ -18,6 +18,9 @@ namespace LevelEditorStub
         [SerializeField] public ScriptableObject[] recipes;
         [SerializeField] public int debugRecipeCount;
 
+        [Header("Recipe Match List Settings")]
+        [SerializeField] public bool excludeStoryRecipeMatchList;
+        [SerializeField] public PseudoPrefabSO[] includeRecipeMatchLists;
         [SerializeField] public PseudoPrefabSO[] allIngredients;
         [SerializeField] public ScriptableObject[] optionalRecipeMatchListItems;
         [SerializeField] public PseudoPrefabSO[] allCookingSteps;
