@@ -98,7 +98,7 @@ namespace LevelEditor
             return recipe;
         }
 
-        public static RecipeWidgetUIController.RecipeTileData[] GetCustomRecipeGuiDescription(CustomRecipeSO customRecipeSO, OrderDefinitionNode recipe)
+        private static RecipeWidgetUIController.RecipeTileData[] GetCustomRecipeGuiDescription(CustomRecipeSO customRecipeSO, OrderDefinitionNode recipe)
         {
             FixOldCustomRecipeSO(customRecipeSO);
 
@@ -159,19 +159,17 @@ namespace LevelEditor
             {
                 CustomRecipeSO customRecipeSO = recipeSO as CustomRecipeSO;
                 List<Sprite> sprites = GetCustomRecipeSpriteList(customRecipeSO, recipe);
-                switch (customRecipeSO.type)
+                int cookingStepCount = 0;
+                CustomRecipeSO cur = customRecipeSO;
+                while (cur != null && (cur.type == CustomRecipeSO.RecipeType.Cooked || cur.type == CustomRecipeSO.RecipeType.Mixed))
                 {
-                    case CustomRecipeSO.RecipeType.Composite:
-                        tileDefinition.m_mainPictures = sprites;
+                    cookingStepCount++;
+                    if (cur.compositionSOs.Length > 1)
                         break;
-                    case CustomRecipeSO.RecipeType.Cooked:
-                    case CustomRecipeSO.RecipeType.Mixed:
-                        tileDefinition.m_mainPictures = sprites.GetRange(0, sprites.Count - 1);
-                        tileDefinition.m_modifierPictures = sprites.GetRange(sprites.Count - 1, 1);
-                        break;
-                    default:
-                        break;
+                    cur = cur.compositionSOs[0] as CustomRecipeSO;
                 }
+                tileDefinition.m_mainPictures = sprites.GetRange(0, sprites.Count - cookingStepCount);
+                tileDefinition.m_modifierPictures = sprites.GetRange(sprites.Count - cookingStepCount, cookingStepCount);
             }
 
             return tileDefinition;
