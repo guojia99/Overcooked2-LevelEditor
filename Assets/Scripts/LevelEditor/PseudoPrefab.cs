@@ -28,7 +28,7 @@ namespace LevelEditor
                 ResetChild();
         }
 
-        public void ResetChild()
+        public virtual void ResetChild()
         {
             if (stub == null)
                 stub = GetComponent<PseudoPrefabStub>();

@@ -9,8 +9,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cff7c13895ab9e47a5e02d4619cc3b9, type: 3}
-  m_Name: p_dlc5_camp_2_3_river_01
+  m_Name: mat_dlc5_water_01
   m_EditorClassIdentifier: 
-  prefabName: p_dlc5_camp_2_3_river_01
-  bundleName: bundle250
-  assetPath: Assets/downloadablecontent/dlc05/dlc_assets/prefabs/dressing/p_dlc5_camp_2_3_river_01.prefab
+  prefabName: mat_dlc5_water_01
+  bundleName: bundle248
+  assetPath: Assets/downloadablecontent/dlc05/dlc_assets/models/dressing assets/materials/mat_dlc5_water_01.mat
