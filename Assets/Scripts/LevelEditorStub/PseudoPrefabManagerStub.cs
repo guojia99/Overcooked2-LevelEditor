@@ -185,5 +185,10 @@ namespace LevelEditorStub
         {
             // entry for bepinex plugin patch
         }
+
+        private void OnDestroy()
+        {
+            // entry for bepinex plugin patch
+        }
     }
 }
