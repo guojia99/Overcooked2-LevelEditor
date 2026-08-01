@@ -137,6 +137,49 @@ namespace LevelEditor
                                 .SetValue(cosmeticsPrefab.GetComponent<OverlapModelsMealDecisions>(), newLookup);
                             cookableContainer.m_cosmeticsPrefab = cosmeticsPrefab;
                         }
+                        else if (cookableContainer.m_cosmeticsPrefab.GetComponent<SkewerCosmeticDecisions>() != null)
+                        {
+                            List<OrderToPrefabLookup.ContentPrefabLookup> uncookedIngredients = new List<OrderToPrefabLookup.ContentPrefabLookup>();
+                            List<OrderToPrefabLookup.ContentPrefabLookup> cookedIngredients = new List<OrderToPrefabLookup.ContentPrefabLookup>();
+                            CookingStepData cookingStepData = childGameObject.GetComponent<CookingHandler>().m_cookingType;
+                            foreach (var ingredient in allowedIngredients)
+                            {
+                                CookedCompositeOrderNode cookedCompositeOrderNode = ingredient.m_content as CookedCompositeOrderNode;
+                                if (cookedCompositeOrderNode != null && 
+                                    cookedCompositeOrderNode.m_cookingStep == cookingStepData && 
+                                    cookedCompositeOrderNode.m_composition != null &&
+                                    cookedCompositeOrderNode.m_composition.Length == 1)
+                                {
+                                    cookedIngredients.Add(new OrderToPrefabLookup.ContentPrefabLookup()
+                                    {
+                                        m_content = cookedCompositeOrderNode.m_composition[0],
+                                        m_prefab = ingredient.m_prefab,
+                                    });
+                                }
+                                else
+                                {
+                                    uncookedIngredients.Add(ingredient);
+                                }
+                            }
+                            OrderToPrefabLookup uncookedLookup = ScriptableObject.CreateInstance<OrderToPrefabLookup>();
+                            uncookedLookup.name = "Lookup_Uncooked_" + gameObject.name;
+                            uncookedLookup.GetType()
+                                .GetField("m_lookupArray", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                                .SetValue(uncookedLookup, uncookedIngredients.ToArray());
+                            OrderToPrefabLookup cookedLookup = ScriptableObject.CreateInstance<OrderToPrefabLookup>();
+                            cookedLookup.name = "Lookup_Cooked_" + gameObject.name;
+                            cookedLookup.GetType()
+                                .GetField("m_lookupArray", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                                .SetValue(cookedLookup, cookedIngredients.ToArray());
+                            GameObject cosmeticsPrefab = RuntimePrefabManager.CloneAsInactivePrefab(cookableContainer.m_cosmeticsPrefab);
+                            typeof(SkewerCosmeticDecisions)
+                                .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.NonPublic)
+                                .SetValue(cosmeticsPrefab.GetComponent<SkewerCosmeticDecisions>(), uncookedLookup);
+                            typeof(SkewerCosmeticDecisions)
+                                .GetField("m_cookedPrefabLookup", BindingFlags.Instance | BindingFlags.NonPublic)
+                                .SetValue(cosmeticsPrefab.GetComponent<SkewerCosmeticDecisions>(), cookedLookup);
+                            cookableContainer.m_cosmeticsPrefab = cosmeticsPrefab;
+                        }
                     }
                 }
             }
