@@ -67,3 +67,6 @@ MonoBehaviour:
   pseudoPrefabSO: {fileID: 11400000, guid: 94da33fea18765347a302f96c3ec24c1, type: 2}
   capacity: 3
   allowedIngredientSOs: []
+  allowedCookingStationTypes: 
+  modelSOs: []
+  models: []

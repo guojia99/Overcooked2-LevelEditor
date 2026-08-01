@@ -495,6 +495,12 @@ namespace LevelEditor
                         break;
                     }
 
+                case "Barbeque":
+                    {
+                        childGameObject.GetComponent<HeatedStationGUI>().m_Offset = new Vector3(0f, 1f, 0f);
+                        break;
+                    }
+
                 default:
                     break;
             }
