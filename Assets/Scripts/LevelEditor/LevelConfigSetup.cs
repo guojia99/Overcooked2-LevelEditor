@@ -36,12 +36,13 @@ namespace LevelEditor
                 .ToArray();
             configTemplate.m_rounds[0].m_recipes = recipeList;
 
-            if (recipes.Any(x => x is CustomRecipeSO) ||
-                !config.allIngredients.IsEmpty() ||
-                !config.optionalRecipeMatchListItems.IsEmpty() ||
-                config.excludeStoryRecipeMatchList ||
-                !config.includeRecipeMatchLists.IsEmpty() ||
-                !config.allCookingSteps.IsEmpty())
+            if (true)
+            //if (recipes.Any(x => x is CustomRecipeSO) ||
+            //    !config.allIngredients.IsEmpty() ||
+            //    !config.optionalRecipeMatchListItems.IsEmpty() ||
+            //    config.excludeStoryRecipeMatchList ||
+            //    !config.includeRecipeMatchLists.IsEmpty() ||
+            //    !config.allCookingSteps.IsEmpty())
             {
                 RecipeMatchList theRecipeMatchList = configTemplate.m_recipeMatchingList;
                 RecipeMatchList newRecipeMatchList = ScriptableObject.CreateInstance<RecipeMatchList>();
