@@ -37,8 +37,8 @@ namespace LevelEditor
             configTemplate.m_rounds[0].m_recipes = recipeList;
 
             if (recipes.Any(x => x is CustomRecipeSO) ||
-                !config.optionalRecipeMatchListItems.IsEmpty() ||
                 !config.allIngredients.IsEmpty() ||
+                !config.optionalRecipeMatchListItems.IsEmpty() ||
                 config.excludeStoryRecipeMatchList ||
                 !config.includeRecipeMatchLists.IsEmpty() ||
                 !config.allCookingSteps.IsEmpty())
@@ -60,15 +60,15 @@ namespace LevelEditor
                 }
 
                 List<OrderDefinitionNode> newRecipeMatchListItems = new List<OrderDefinitionNode>();
-                
-                if (!config.optionalRecipeMatchListItems.IsEmpty())
-                {
-                    newRecipeMatchListItems.AddRange(config.optionalRecipeMatchListItems.Select(x => RecipeHelper.GetOptionalRecipeNode(x)));
-                }
 
                 if (!config.allIngredients.IsEmpty())
                 {
                     newRecipeMatchListItems.AddRange(config.allIngredients.Select(x => RecipeHelper.GetIngredientOrItemOrderNode(x)));
+                }
+
+                if (!config.optionalRecipeMatchListItems.IsEmpty())
+                {
+                    newRecipeMatchListItems.AddRange(config.optionalRecipeMatchListItems.Select(x => RecipeHelper.GetOptionalRecipeNode(x)));
                 }
 
                 newRecipeMatchListItems.AddRange(recipeList.m_recipes.Select(x => x.m_order));
