@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEditor;
 using UnityEngine;
 
 
@@ -64,17 +63,13 @@ namespace LevelEditor
                 CompositeOrderNode compositeOrderNode = recipe as CompositeOrderNode;
                 if (customRecipeSO.compositionSOs != null)
                 {
-                    compositeOrderNode.m_composition = customRecipeSO.compositionSOs.Select(
-                        x => x is CustomRecipeSO ?
-                        GetCustomRecipeOrderDefinitionNode(x as CustomRecipeSO) :
-                        GetIngredientOrderNode(x as PseudoPrefabSO)).ToArray();
+                    compositeOrderNode.m_composition = customRecipeSO.compositionSOs
+                        .Select(x => GetCustomRecipeOrIngredientNode(x)).ToArray();
                 }
                 if (customRecipeSO.optionalSOs != null)
                 {
-                    compositeOrderNode.m_optional = customRecipeSO.optionalSOs.Select(
-                        x => x is CustomRecipeSO ?
-                        GetCustomRecipeOrderDefinitionNode(x as CustomRecipeSO) :
-                        GetIngredientOrderNode(x as PseudoPrefabSO)).ToArray();
+                    compositeOrderNode.m_optional = customRecipeSO.optionalSOs
+                        .Select(x => GetCustomRecipeOrIngredientNode(x)).ToArray();
                 }
             }
 
@@ -175,11 +170,6 @@ namespace LevelEditor
             return tileDefinition;
         }
 
-
-
-
-
-
         public static OrderDefinitionNode GetOptionalRecipeNode(ScriptableObject recipeSO)
         {
             if (recipeSO is PseudoPrefabSO)
@@ -187,28 +177,65 @@ namespace LevelEditor
 
             CustomRecipeSO customRecipeSO = recipeSO as CustomRecipeSO;
             if (customRecipeSO == null) return null;
+            FixOldCustomRecipeSO(customRecipeSO);
             OrderDefinitionNode recipe;
 
-            if (customRecipeSO is CustomRecipeOptionalPizzaSO)
+            if (customRecipeSO is CustomRecipeOptionalBurgerSO)
+            {
+                CustomRecipeOptionalBurgerSO optionalBurgerSO = (CustomRecipeOptionalBurgerSO)customRecipeSO;
+                CompositeOrderNode node = ScriptableObject.CreateInstance<CompositeOrderNode>();
+                node.m_composition = new OrderDefinitionNode[0];
+                node.m_optional = optionalBurgerSO.optionalSOs
+                    .Where(x => x != optionalBurgerSO.bunSO)
+                    .Select(x => GetCustomRecipeOrIngredientNode(x))
+                    .Concat(new OrderDefinitionNode[] { GetIngredientOrderNode(optionalBurgerSO.bunSO) })
+                    .ToArray();
+
+                GameObject platingPrefabAsset = PseudoPrefabManager.LoadAsset(customRecipeSO.modelSO);
+                GameObject platingPrefab = RuntimePrefabManager.CloneAsInactivePrefab(platingPrefabAsset);
+                BurgerBunCosmeticDecisions burgerCosmetic = platingPrefab.GetComponent<BurgerBunCosmeticDecisions>();
+                BurritoCosmeticDecisions burritoCosmetic = platingPrefab.GetComponent<BurritoCosmeticDecisions>();
+                if (burgerCosmetic != null)
+                {
+                    OrderToPrefabLookup oldLookup = (OrderToPrefabLookup)typeof(BurgerBunCosmeticDecisions)
+                        .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .GetValue(burgerCosmetic);
+                    OrderToPrefabLookup lookup = GetOrderToPrefabLookupBurger(optionalBurgerSO, oldLookup);
+                    typeof(BurgerBunCosmeticDecisions)
+                        .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                        .SetValue(burgerCosmetic, lookup);
+                }
+                else if (burritoCosmetic != null)
+                {
+                    OrderToPrefabLookup oldLookup = (OrderToPrefabLookup)typeof(OverlapModelsMealDecisions)
+                        .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                        .GetValue(burritoCosmetic);
+                    OrderToPrefabLookup lookup = GetOrderToPrefabLookupBurger(optionalBurgerSO, oldLookup);
+                    typeof(OverlapModelsMealDecisions)
+                        .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                        .SetValue(burritoCosmetic, lookup);
+                }
+
+                node.m_platingPrefab = platingPrefab;
+                recipe = node;
+            }
+            else if (customRecipeSO is CustomRecipeOptionalPizzaSO)
             {
                 CustomRecipeOptionalPizzaSO optionalPizzaSO = (CustomRecipeOptionalPizzaSO)customRecipeSO;
                 CookedCompositeOrderNode node = ScriptableObject.CreateInstance<CookedCompositeOrderNode>();
                 node.m_cookingStep = PseudoPrefabManager.LoadAsset<CookingStepData>(optionalPizzaSO.cookingStepSO);
                 node.m_progress = optionalPizzaSO.cooked ? CookedCompositeOrderNode.CookingProgress.Cooked : CookedCompositeOrderNode.CookingProgress.Raw;
                 node.m_composition = new OrderDefinitionNode[] { GetIngredientOrderNode(optionalPizzaSO.doughSO) };
-                node.m_optional = optionalPizzaSO.compositionSOs
-                    .Where(x => x != optionalPizzaSO.doughSO)
-                    .Select(x => GetIngredientOrderNode(x as PseudoPrefabSO))
-                    .ToArray();
+                node.m_optional = optionalPizzaSO.optionalSOs.Select(x => GetCustomRecipeOrIngredientNode(x)).ToArray();
 
                 GameObject platingPrefabAsset = PseudoPrefabManager.LoadAsset(customRecipeSO.modelSO);
                 GameObject platingPrefab = RuntimePrefabManager.CloneAsInactivePrefab(platingPrefabAsset);
                 PizzaCosmeticDecisions pizzaCosmetic = platingPrefab.GetComponent<PizzaCosmeticDecisions>();
-                OrderToPrefabLookup uncookedLookup = GetOrderToPrefabLookupPizza(optionalPizzaSO, cooked: false);
+                OrderToPrefabLookup uncookedLookup = GetOrderToPrefabLookupPizza(optionalPizzaSO, false, pizzaCosmetic);
+                OrderToPrefabLookup cookedLookup = GetOrderToPrefabLookupPizza(optionalPizzaSO, true, pizzaCosmetic);
                 pizzaCosmetic.GetType()
                     .GetField("m_uncookedPrefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                     .SetValue(pizzaCosmetic, uncookedLookup);
-                OrderToPrefabLookup cookedLookup = GetOrderToPrefabLookupPizza(optionalPizzaSO, cooked: true);
                 pizzaCosmetic.GetType()
                     .GetField("m_cookedPrefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                     .SetValue(pizzaCosmetic, cookedLookup);
@@ -230,25 +257,73 @@ namespace LevelEditor
             return recipe;
         }
 
-        public static OrderToPrefabLookup GetOrderToPrefabLookupPizza(CustomRecipeOptionalPizzaSO optionalPizzaSO, bool cooked)
+        public static OrderToPrefabLookup GetOrderToPrefabLookupBurger(CustomRecipeOptionalBurgerSO optionalBurgerSO, OrderToPrefabLookup oldLookup)
+        {
+            OrderToPrefabLookup lookup = GetOrderToPrefabLookup(
+                optionalBurgerSO.recipeName, 
+                optionalBurgerSO.optionalSOs, 
+                optionalBurgerSO.ingredientModels, optionalBurgerSO.ingredientModelSOs, oldLookup);
+            return lookup;
+        }
+
+        public static OrderToPrefabLookup GetOrderToPrefabLookupPizza(CustomRecipeOptionalPizzaSO optionalPizzaSO, bool cooked, PizzaCosmeticDecisions pizzaCosmeticDecisions)
+        {
+            var models = cooked ? optionalPizzaSO.cookedPizzaIngredientPrefabs : optionalPizzaSO.rawPizzaIngredientPrefabs;
+            var modelSOs = cooked ? optionalPizzaSO.cookedPizzaIngredientPrefabSOs : optionalPizzaSO.rawPizzaIngredientPrefabSOs;
+            OrderToPrefabLookup oldLookup = (OrderToPrefabLookup)pizzaCosmeticDecisions.GetType()
+                .GetField(cooked ? "m_cookedPrefabLookup" : "m_uncookedPrefabLookup", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(pizzaCosmeticDecisions);
+            OrderToPrefabLookup lookup = GetOrderToPrefabLookup(
+                optionalPizzaSO.recipeName, 
+                optionalPizzaSO.optionalSOs, 
+                models, modelSOs, oldLookup);
+            return lookup;
+        }
+
+        public static OrderToPrefabLookup GetOrderToPrefabLookup(string recipeName, ScriptableObject[] optionalSOs, GameObject[] models, PseudoPrefabSO[] modelSOs, OrderToPrefabLookup oldLookup)
+        {
+            var indices = Enumerable.Range(0, optionalSOs.Length);
+            OrderDefinitionNode[] orderDefinitionNodes = indices.Select(
+                i => GetCustomRecipeOrIngredientNode(optionalSOs[i])).ToArray();
+            OrderToPrefabLookup.ContentPrefabLookup[] oldLookupArray = new OrderToPrefabLookup.ContentPrefabLookup[0];
+            if (oldLookup != null)
+            {
+                oldLookupArray = (OrderToPrefabLookup.ContentPrefabLookup[])oldLookup.GetType()
+                    .GetField("m_lookupArray", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                    .GetValue(oldLookup);
+            }
+            GameObject[] realModels = indices.Select(i =>
+            {
+                if (i < models.Length && models[i] != null)
+                    return models[i];
+                if (i < modelSOs.Length && modelSOs[i] != null)
+                    return PseudoPrefabManager.LoadAsset(modelSOs[i]);
+                int index = oldLookupArray.FindIndex_Predicate(x => x.m_content.Equals(orderDefinitionNodes[i]));
+                if (index >= 0)
+                    return oldLookupArray[index].m_prefab;
+                else
+                    return null;
+            }).ToArray();
+            OrderToPrefabLookup lookup = GetOrderToPrefabLookup(orderDefinitionNodes, realModels);
+            lookup.name = "Lookup_" + recipeName;
+            return lookup;
+        }
+
+        private static OrderToPrefabLookup GetOrderToPrefabLookup(OrderDefinitionNode[] orderDefinitionNodes, GameObject[] models)
         {
             OrderToPrefabLookup lookup = ScriptableObject.CreateInstance<OrderToPrefabLookup>();
             Dictionary<OrderDefinitionNode, OrderToPrefabLookup.ContentPrefabLookup> lookupDic = new Dictionary<OrderDefinitionNode, OrderToPrefabLookup.ContentPrefabLookup>();
-            for (int i = 0; i < optionalPizzaSO.compositionSOs.Length; i++)
+            for (int i = 0; i < orderDefinitionNodes.Length; i++)
             {
-                if (cooked && optionalPizzaSO.compositionSOs[i] == optionalPizzaSO.doughSO) continue;
-                OrderDefinitionNode ingredientNode = GetIngredientOrderNode(optionalPizzaSO.compositionSOs[i] as PseudoPrefabSO);
-                if (lookupDic.ContainsKey(ingredientNode))
+                OrderDefinitionNode ingredientNode = orderDefinitionNodes[i];
+                OrderDefinitionNode matchKey = lookupDic.Keys.FirstOrDefault(key => key.Equals(ingredientNode));
+                if (matchKey != null)
                 {
-                    lookupDic[ingredientNode].m_amountAllowed += 1;
+                    lookupDic[matchKey].m_amountAllowed += 1;
                 }
                 else
                 {
-                    GameObject prefab;
-                    if (cooked)
-                        prefab = optionalPizzaSO.cookedPizzaIngredientPrefabs[i] ?? PseudoPrefabManager.LoadAsset(optionalPizzaSO.cookedPizzaIngredientPrefabSOs[i]);
-                    else
-                        prefab = optionalPizzaSO.rawPizzaIngredientPrefabs[i] ?? PseudoPrefabManager.LoadAsset(optionalPizzaSO.rawPizzaIngredientPrefabSOs[i]);
+                    GameObject prefab = models[i];
                     lookupDic[ingredientNode] = new OrderToPrefabLookup.ContentPrefabLookup
                     {
                         m_content = ingredientNode,
@@ -287,6 +362,13 @@ namespace LevelEditor
                     return null;
                 }
             }
+        }
+
+        public static OrderDefinitionNode GetCustomRecipeOrIngredientNode(ScriptableObject recipeSO)
+        {
+            return recipeSO is CustomRecipeSO ? 
+                GetCustomRecipeOrderDefinitionNode(recipeSO as CustomRecipeSO) : 
+                GetIngredientOrderNode(recipeSO as PseudoPrefabSO);
         }
 
         public static ItemOrderNode GetItemOrderNode(PseudoPrefabSO pseudoPrefabSO)
@@ -358,6 +440,27 @@ namespace LevelEditor
                 else
                 {
                     customRecipeSO.type = CustomRecipeSO.RecipeType.Composite;
+                }
+                if (customRecipeSO is CustomRecipeOptionalPizzaSO)
+                {
+                    CustomRecipeOptionalPizzaSO pizzaSO = (CustomRecipeOptionalPizzaSO)customRecipeSO;
+                    customRecipeSO.cookingProgress = pizzaSO.cooked ? CustomRecipeSO.CookingProgress.Cooked : CustomRecipeSO.CookingProgress.Raw;
+                    int doughIndex = pizzaSO.compositionSOs.FindIndex_Predicate(x => x == pizzaSO.doughSO);
+                    int length = pizzaSO.compositionSOs.Length;
+                    if (doughIndex >= 0 &&
+                        pizzaSO.rawPizzaIngredientPrefabs.Length == length &&
+                        pizzaSO.rawPizzaIngredientPrefabSOs.Length == length &&
+                        pizzaSO.cookedPizzaIngredientPrefabs.Length == length &&
+                        pizzaSO.cookedPizzaIngredientPrefabSOs.Length == length)
+                    {
+                        var indices = Enumerable.Range(0, length).Where(i => i != doughIndex);
+                        pizzaSO.optionalSOs = indices.Select(i => pizzaSO.compositionSOs[i]).ToArray();
+                        pizzaSO.rawPizzaIngredientPrefabs = indices.Select(i => pizzaSO.rawPizzaIngredientPrefabs[i]).ToArray();
+                        pizzaSO.rawPizzaIngredientPrefabSOs = indices.Select(i => pizzaSO.rawPizzaIngredientPrefabSOs[i]).ToArray();
+                        pizzaSO.cookedPizzaIngredientPrefabs = indices.Select(i => pizzaSO.cookedPizzaIngredientPrefabs[i]).ToArray();
+                        pizzaSO.cookedPizzaIngredientPrefabSOs = indices.Select(i => pizzaSO.cookedPizzaIngredientPrefabSOs[i]).ToArray();
+                        pizzaSO.compositionSOs = new ScriptableObject[] { pizzaSO.doughSO };
+                    }
                 }
             }
         }
