@@ -1,9 +1,9 @@
-﻿using LevelEditorStub;
+﻿using LevelEditor;
+using LevelEditorStub;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using System.Collections.Generic;
-using LevelEditor;
-using System.Linq;
 
 
 [CustomEditor(typeof(LevelInfoSO))]
@@ -31,7 +31,6 @@ public class LevelInfoSOEditor : Editor
             // 正常绘制当前字段（保留原本的 Header 和 Space 装饰）
             EditorGUILayout.PropertyField(iterator, true);
 
-            // 【精准拦截】如果当前绘制完的字段刚好是 allIngredients
             if (iterator.name == "allIngredients")
             {
                 // 在它下方插入按钮
@@ -42,6 +41,22 @@ public class LevelInfoSOEditor : Editor
                     LevelInfoSO levelInfo = (LevelInfoSO)target;
                     Undo.RecordObject(levelInfo, "Auto Fill Ingredients");
                     AutoFillIngredients(levelInfo);
+                    EditorUtility.SetDirty(levelInfo);
+                }
+                //GUI.backgroundColor = Color.white; // 恢复默认颜色
+                GUILayout.Space(5);
+            }
+
+            if (iterator.name == "audioDirectorySOs")
+            {
+                // 在它下方插入按钮
+                GUILayout.Space(5);
+                //GUI.backgroundColor = Color.white;
+                if (GUILayout.Button("Fill All AudioDirectorySOs", GUILayout.Height(25)))
+                {
+                    LevelInfoSO levelInfo = (LevelInfoSO)target;
+                    Undo.RecordObject(levelInfo, "Fill All AudioDirectorySOs");
+                    FillAllAudioDirectorySOs(levelInfo);
                     EditorUtility.SetDirty(levelInfo);
                 }
                 //GUI.backgroundColor = Color.white; // 恢复默认颜色
@@ -89,5 +104,19 @@ public class LevelInfoSOEditor : Editor
             }
         }
         levelInfo.allIngredients = allIngredients.ToArray();
+    }
+
+    private void FillAllAudioDirectorySOs(LevelInfoSO levelInfo)
+    {
+        string path = "Assets/common02/pseudo_prefab_so/audio/AudioDirectories";
+        string[] guids = AssetDatabase.FindAssets("", new[] { path });
+
+        List<PseudoPrefabSO> allAudioDirectorySOs = new List<PseudoPrefabSO>();
+        foreach (string guid in guids)
+        {
+            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            allAudioDirectorySOs.Add(AssetDatabase.LoadAssetAtPath<PseudoPrefabSO>(assetPath));
+        }
+        levelInfo.audioDirectorySOs = allAudioDirectorySOs.ToArray();
     }
 }

@@ -158,20 +158,20 @@ namespace LevelEditor
                 .SetValue(component, LoadAsset(stub.RecipeUISO).GetComponent<RecipeWidgetUIController>());
 
             component = stub.AudioManagerGO.GetComponent<CampaignAudioManager>();
-            AudioClip music = stub.InLevelMusicSO == null ? null : LoadAsset<AudioClip>(stub.InLevelMusicSO);
+            AudioClip music = stub.levelInfo.inLevelMusicSO == null ? null : LoadAsset<AudioClip>(stub.levelInfo.inLevelMusicSO);
             component.GetType()
                 .GetField("m_inLevelMusic", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                 .SetValue(component, music);
             component.GetType()
                 .GetField("m_inLevelAmbiences", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
-                .SetValue(component, stub.InLevelAmbiences.Select(x => (GameLoopingAudioTag)x).ToArray());
+                .SetValue(component, stub.levelInfo.inLevelAmbiences.Select(x => (GameLoopingAudioTag)x).ToArray());
             component.GetType()
                 .GetField("m_summaryScreenMusic", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                 .SetValue(component, LoadAsset<AudioClip>(stub.RoundResultsSO));
-            AudioDirectoryData[] m_audioDirectories = new AudioDirectoryData[stub.AudioDirectorySOs.Length];
-            for (int i = 0; i < stub.AudioDirectorySOs.Length; i++)
+            AudioDirectoryData[] m_audioDirectories = new AudioDirectoryData[stub.levelInfo.audioDirectorySOs.Length];
+            for (int i = 0; i < stub.levelInfo.audioDirectorySOs.Length; i++)
             {
-                m_audioDirectories[i] = LoadAsset<AudioDirectoryData>(stub.AudioDirectorySOs[i]);
+                m_audioDirectories[i] = LoadAsset<AudioDirectoryData>(stub.levelInfo.audioDirectorySOs[i]);
                 foreach (var audio in m_audioDirectories[i].LoopingAudio)
                     if (audio.Tag == GameLoopingAudioTag.Flamethrower)
                         audio.Volume = 0.5f;
@@ -214,8 +214,8 @@ namespace LevelEditor
                 .SetValue(component, LevelConfigSetup.SetupConfig(stub.configTemplateSO, stub.levelInfo, 4));
 
             component = stub.KillPlaneGO.GetComponent<RespawnCollider>();
-            if (stub.OnDeathEffectSO != null)
-                (component as RespawnCollider).m_onDeathEffect = LoadAsset(stub.OnDeathEffectSO);
+            if (stub.levelInfo.onDeathEffectSO != null)
+                (component as RespawnCollider).m_onDeathEffect = LoadAsset(stub.levelInfo.onDeathEffectSO);
         }
 
         public static void ResetAllPseudoPrefabs()

@@ -17,10 +17,23 @@ MonoBehaviour:
   sceneName: s_template
   recipes:
   - {fileID: 11400000, guid: b98d38299de379745b64461474cd7943, type: 2}
-  useScore2: 0
   debugRecipeCount: 0
+  excludeStoryRecipeMatchList: 0
+  includeRecipeMatchLists: []
+  allIngredients: []
   optionalRecipeMatchListItems: []
+  allCookingSteps: []
+  inLevelMusicSO: {fileID: 11400000, guid: 4821c699814fc6246853b9500ac41e8a, type: 2}
+  inLevelAmbiences: 
+  audioDirectorySOs:
+  - {fileID: 11400000, guid: 45abe9378aa684144b655a71d85d422a, type: 2}
+  - {fileID: 11400000, guid: b298262cebf31cc41ad9e3d8eef6104a, type: 2}
+  - {fileID: 11400000, guid: 4c50268f8f711f0478ed2afe1fe04148, type: 2}
+  - {fileID: 11400000, guid: c3d1d7d9880429247949bfc85cb265cd, type: 2}
+  - {fileID: 11400000, guid: 193b2f9bf726f474bbcad5946bf20392, type: 2}
   disableDynamicParenting: 1
+  OnDeathEffectSO: {fileID: 0}
+  onDeathEffectSO: {fileID: 0}
   config_1p: {fileID: 11400000, guid: 36987697278e6c149b2cf29bfb855603, type: 2}
   config_2p: {fileID: 11400000, guid: 83bc6c2e1ca8d9b428eb0248e6740323, type: 2}
   config_3p: {fileID: 11400000, guid: eed0a1d6961d8b54e8a66d6fe133adfb, type: 2}

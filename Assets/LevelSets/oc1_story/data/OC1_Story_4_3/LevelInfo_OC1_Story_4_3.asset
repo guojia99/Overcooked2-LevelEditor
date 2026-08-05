@@ -19,10 +19,25 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b98d38299de379745b64461474cd7943, type: 2}
   - {fileID: 11400000, guid: d1bce708a9311b94dbf8e6995d33e20a, type: 2}
   - {fileID: 11400000, guid: 68f4e9cdbfeb9db4a81f0fc9f53c0bb6, type: 2}
-  useScore2: 0
   debugRecipeCount: 0
+  excludeStoryRecipeMatchList: 0
+  includeRecipeMatchLists: []
+  allIngredients: []
   optionalRecipeMatchListItems: []
+  allCookingSteps: []
+  inLevelMusicSO: {fileID: 11400000, guid: ce0ac62b06f18ce46861ec8f710f8f99, type: 2}
+  inLevelAmbiences: 16000000
+  audioDirectorySOs:
+  - {fileID: 11400000, guid: 45abe9378aa684144b655a71d85d422a, type: 2}
+  - {fileID: 11400000, guid: b298262cebf31cc41ad9e3d8eef6104a, type: 2}
+  - {fileID: 11400000, guid: 3d0fe9c3ffd17b94d831f68866d6de6d, type: 2}
+  - {fileID: 11400000, guid: 4c50268f8f711f0478ed2afe1fe04148, type: 2}
+  - {fileID: 11400000, guid: 193b2f9bf726f474bbcad5946bf20392, type: 2}
+  - {fileID: 11400000, guid: 427e0b2543c379b479901029760f5eb0, type: 2}
+  - {fileID: 11400000, guid: ff93496191fddcb47afd915ba83d456d, type: 2}
   disableDynamicParenting: 1
+  OnDeathEffectSO: {fileID: 0}
+  onDeathEffectSO: {fileID: 0}
   config_1p: {fileID: 11400000, guid: d75ca8ed06db5d343879bc02e5817727, type: 2}
   config_2p: {fileID: 11400000, guid: 636155fb25882c64b92604867e49a30c, type: 2}
   config_3p: {fileID: 11400000, guid: 36d6e6717501e474680668aca96e4f5e, type: 2}

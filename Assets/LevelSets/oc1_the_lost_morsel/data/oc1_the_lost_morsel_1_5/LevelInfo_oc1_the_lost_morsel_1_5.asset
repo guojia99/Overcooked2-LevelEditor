@@ -20,8 +20,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 46777af3b534f0c449ca60c4b173fbbc, type: 2}
   - {fileID: 11400000, guid: f4341b4765fce7d4482fb0002ea8f101, type: 2}
   debugRecipeCount: 0
+  excludeStoryRecipeMatchList: 0
+  includeRecipeMatchLists: []
+  allIngredients: []
   optionalRecipeMatchListItems: []
+  allCookingSteps: []
+  inLevelMusicSO: {fileID: 0}
+  inLevelAmbiences: 
+  audioDirectorySOs: []
   disableDynamicParenting: 1
+  OnDeathEffectSO: {fileID: 0}
+  onDeathEffectSO: {fileID: 0}
   config_1p: {fileID: 11400000, guid: 4b149f43d1097cc4796b9621c3e3d559, type: 2}
   config_2p: {fileID: 11400000, guid: a6e9548054f214c4686263ea19f83d6d, type: 2}
   config_3p: {fileID: 11400000, guid: d5d9b167720370740abf3bda7816c4a5, type: 2}
