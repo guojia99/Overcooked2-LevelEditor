@@ -69,7 +69,7 @@ namespace LevelEditor
 
                 if (!config.optionalRecipeMatchListItems.IsEmpty())
                 {
-                    newRecipeMatchListItems.AddRange(config.optionalRecipeMatchListItems.Select(x => RecipeHelper.GetOptionalRecipeNode(x)));
+                    newRecipeMatchListItems.AddRange(config.optionalRecipeMatchListItems.Select(x => RecipeHelper.GetOrderDefinitionNodeCustomRecipeOptional(x)));
                 }
 
                 newRecipeMatchListItems.AddRange(recipeList.m_recipes.Select(x => x.m_order));

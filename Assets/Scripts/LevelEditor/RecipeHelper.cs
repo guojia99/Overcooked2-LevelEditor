@@ -28,14 +28,25 @@ namespace LevelEditor
                 var entry = new RecipeList.Entry();
                 entry.m_weight = 1f; // this is unused in the game
                 entry.m_scoreForMeal = customRecipeSO.score;
-                entry.m_order = GetCustomRecipeOrderDefinitionNode(customRecipeSO);
-                entry.m_order.m_orderGuiDescription = GetCustomRecipeGuiDescription(customRecipeSO, entry.m_order);
+                entry.m_order = GetOrderDefinitionNodeCustomRecipe(customRecipeSO);
+                entry.m_order.m_orderGuiDescription = GetGuiDescriptionCustomRecipe(customRecipeSO, entry.m_order);
                 return entry;
             }
             else return new RecipeList.Entry();
         }
 
-        public static OrderDefinitionNode GetCustomRecipeOrderDefinitionNode(CustomRecipeSO customRecipeSO)
+        public static OrderDefinitionNode GetOrderDefinitionNode(ScriptableObject recipeSO)
+        {
+            if (recipeSO is PseudoPrefabSORecipe)
+                return PseudoPrefabManager.LoadAsset<OrderDefinitionNode>(recipeSO as PseudoPrefabSORecipe);
+            else if (recipeSO is CustomRecipeSO)
+                return GetOrderDefinitionNodeCustomRecipe(recipeSO as CustomRecipeSO);
+            else if (recipeSO is PseudoPrefabSO)
+                return GetIngredientOrderNode(recipeSO as PseudoPrefabSO);
+            else return null;
+        }
+
+        public static OrderDefinitionNode GetOrderDefinitionNodeCustomRecipe(CustomRecipeSO customRecipeSO)
         {
             FixOldCustomRecipeSO(customRecipeSO);
 
@@ -64,12 +75,12 @@ namespace LevelEditor
                 if (customRecipeSO.compositionSOs != null)
                 {
                     compositeOrderNode.m_composition = customRecipeSO.compositionSOs
-                        .Select(x => GetCustomRecipeOrIngredientNode(x)).ToArray();
+                        .Select(x => GetOrderDefinitionNode(x)).ToArray();
                 }
                 if (customRecipeSO.optionalSOs != null)
                 {
                     compositeOrderNode.m_optional = customRecipeSO.optionalSOs
-                        .Select(x => GetCustomRecipeOrIngredientNode(x)).ToArray();
+                        .Select(x => GetOrderDefinitionNode(x)).ToArray();
                 }
             }
 
@@ -93,7 +104,7 @@ namespace LevelEditor
             return recipe;
         }
 
-        private static RecipeWidgetUIController.RecipeTileData[] GetCustomRecipeGuiDescription(CustomRecipeSO customRecipeSO, OrderDefinitionNode recipe)
+        private static RecipeWidgetUIController.RecipeTileData[] GetGuiDescriptionCustomRecipe(CustomRecipeSO customRecipeSO, OrderDefinitionNode recipe)
         {
             FixOldCustomRecipeSO(customRecipeSO);
 
@@ -109,14 +120,14 @@ namespace LevelEditor
                     for (int i = 0; i < customRecipeSO.compositionSOs.Length; i++)
                     {
                         children[i] = new RecipeWidgetUIController.RecipeTileData();
-                        children[i].m_tileDefinition = GetCustomRecipeTileDefinition(customRecipeSO.compositionSOs[i], compositeOrderNode.m_composition[i]);
+                        children[i].m_tileDefinition = GetTileDefinition(customRecipeSO.compositionSOs[i], compositeOrderNode.m_composition[i]);
                     }
                     gui0.m_children = Enumerable.Range(1, children.Length).ToList();
                     return new List<RecipeWidgetUIController.RecipeTileData> { gui0 }.Concat(children).ToArray();
                 case CustomRecipeSO.RecipeType.Cooked:
                 case CustomRecipeSO.RecipeType.Mixed:
                     RecipeWidgetUIController.RecipeTileData gui1 = new RecipeWidgetUIController.RecipeTileData();
-                    gui1.m_tileDefinition = GetCustomRecipeTileDefinition(customRecipeSO, recipe);
+                    gui1.m_tileDefinition = GetTileDefinition(customRecipeSO, recipe);
                     gui0.m_children = new List<int> { 1 };
                     return new RecipeWidgetUIController.RecipeTileData[] { gui0, gui1 };
                 default:
@@ -124,53 +135,112 @@ namespace LevelEditor
             }
         }
 
-        private static List<Sprite> GetCustomRecipeSpriteList(CustomRecipeSO customRecipeSO, OrderDefinitionNode recipe)
+        private static List<Sprite> GetSpriteList(ScriptableObject recipeSO, OrderDefinitionNode recipe, out int cookingStepCount)
         {
-            List<Sprite> list = new List<Sprite>();
-            if (customRecipeSO.type == CustomRecipeSO.RecipeType.Null || !(recipe is CompositeOrderNode)) return list;
-            CompositeOrderNode compositeOrderNode = recipe as CompositeOrderNode;
-            for (int i = 0; i < customRecipeSO.compositionSOs.Length; i++)
+            if (recipeSO is PseudoPrefabSORecipe)
             {
-                if (customRecipeSO.compositionSOs[i] is CustomRecipeSO)
-                    list.AddRange(GetCustomRecipeSpriteList(customRecipeSO.compositionSOs[i] as CustomRecipeSO, compositeOrderNode.m_composition[i]));
-                else if (customRecipeSO.compositionSOs[i] is PseudoPrefabSO && compositeOrderNode.m_composition[i] is IngredientOrderNode)
-                    list.Add((compositeOrderNode.m_composition[i] as IngredientOrderNode).m_iconSprite);
-            }
-            if (customRecipeSO.type == CustomRecipeSO.RecipeType.Cooked)
-                list.Add(customRecipeSO.GetCookingStepIcon());
-            else if (customRecipeSO.type == CustomRecipeSO.RecipeType.Mixed)
-                list.Add(customRecipeSO.GetMixingIcon());
-            return list;
-        }
-
-        private static RecipeWidgetTile.TileDefinition GetCustomRecipeTileDefinition(ScriptableObject recipeSO, OrderDefinitionNode recipe)
-        {
-            RecipeWidgetTile.TileDefinition tileDefinition = new RecipeWidgetTile.TileDefinition();
-            if (recipeSO is PseudoPrefabSO)
-            {
-                tileDefinition.m_mainPictures = new List<Sprite> { (recipe as IngredientOrderNode).m_iconSprite };
+                return GetSpriteListPseudoRecipe(recipeSO as PseudoPrefabSORecipe, recipe, out cookingStepCount);
             }
             else if (recipeSO is CustomRecipeSO)
             {
                 CustomRecipeSO customRecipeSO = recipeSO as CustomRecipeSO;
-                List<Sprite> sprites = GetCustomRecipeSpriteList(customRecipeSO, recipe);
-                int cookingStepCount = 0;
-                CustomRecipeSO cur = customRecipeSO;
-                while (cur != null && (cur.type == CustomRecipeSO.RecipeType.Cooked || cur.type == CustomRecipeSO.RecipeType.Mixed))
+                List<Sprite> list = new List<Sprite>();
+                if (customRecipeSO.type == CustomRecipeSO.RecipeType.Null || !(recipe is CompositeOrderNode))
                 {
-                    cookingStepCount++;
-                    if (cur.compositionSOs.Length > 1)
-                        break;
-                    cur = cur.compositionSOs[0] as CustomRecipeSO;
+                    cookingStepCount = 0;
+                    return list;
                 }
-                tileDefinition.m_mainPictures = sprites.GetRange(0, sprites.Count - cookingStepCount);
-                tileDefinition.m_modifierPictures = sprites.GetRange(sprites.Count - cookingStepCount, cookingStepCount);
+                CompositeOrderNode compositeOrderNode = recipe as CompositeOrderNode;
+                cookingStepCount = 0;
+                for (int i = 0; i < customRecipeSO.compositionSOs.Length; i++)
+                {
+                    list.AddRange(GetSpriteList(customRecipeSO.compositionSOs[i], compositeOrderNode.m_composition[i], out cookingStepCount));
+                }
+                if (customRecipeSO.type == CustomRecipeSO.RecipeType.Cooked || customRecipeSO.type == CustomRecipeSO.RecipeType.Mixed)
+                {
+                    cookingStepCount += 1;
+                    if (customRecipeSO.compositionSOs.Length > 1)
+                        cookingStepCount = 1;
+                }
+                if (customRecipeSO.type == CustomRecipeSO.RecipeType.Cooked)
+                    list.Add(customRecipeSO.GetCookingStepIcon());
+                else if (customRecipeSO.type == CustomRecipeSO.RecipeType.Mixed)
+                    list.Add(customRecipeSO.GetMixingIcon());
+                return list;
             }
+            else if (recipeSO is PseudoPrefabSO && recipe is IngredientOrderNode)
+            {
+                cookingStepCount = 0;
+                return new List<Sprite> { (recipe as IngredientOrderNode).m_iconSprite };
+            }
+            else
+            {
+                cookingStepCount = 0;
+                return new List<Sprite>();
+            }
+        }
+        
+        private static List<Sprite> GetSpriteListPseudoRecipe(PseudoPrefabSORecipe recipeSO, OrderDefinitionNode recipe, out int cookingStepCount)
+        {
+            List<Sprite> sprites = new List<Sprite>();
+            cookingStepCount = 0;
+            if (!recipe.m_orderGuiDescription.IsEmpty())
+            {
+                foreach (RecipeWidgetUIController.RecipeTileData tile in recipe.m_orderGuiDescription.Skip(1))
+                {
+                    if (tile.m_tileDefinition.m_mainPictures != null)
+                        sprites.AddRange(tile.m_tileDefinition.m_mainPictures);
+                    if (tile.m_tileDefinition.m_modifierPictures != null)
+                        sprites.AddRange(tile.m_tileDefinition.m_modifierPictures);
+                }
+                if (recipe.m_orderGuiDescription.Length == 2)
+                    cookingStepCount = recipe.m_orderGuiDescription[1].m_tileDefinition.m_modifierPictures.Count;
+            }
+            else
+            {
+                MixedCompositeOrderNode mixedCompositeOrderNode = recipe as MixedCompositeOrderNode;
+                if (mixedCompositeOrderNode != null)
+                {
+                    // mixed or smoothie
+                    sprites.AddRange(mixedCompositeOrderNode.m_composition.Select(x => (x as IngredientOrderNode).m_iconSprite));
+                    if (recipe.m_platingStep == null && recipe.m_platingPrefab == null)
+                    {
+                        // mixed
+                        PseudoPrefabSO pseudoPrefabSO = ScriptableObject.CreateInstance<PseudoPrefabSO>();
+                        pseudoPrefabSO.bundleName = "bundle18";
+                        pseudoPrefabSO.assetPath = "Assets/data/recipedata/cookingstepdata/icons/Mixer.png";
+                        Sprite icon = PseudoPrefabManager.LoadSpriteSubAsset(pseudoPrefabSO);
+                        sprites.Add(icon);
+                        UnityEngine.Object.DestroyImmediate(pseudoPrefabSO);
+                        cookingStepCount = 1;
+                    }
+                    else
+                    {
+                        // smoothie
+                        PseudoPrefabSO pseudoPrefabSO = ScriptableObject.CreateInstance<PseudoPrefabSO>();
+                        pseudoPrefabSO.bundleName = "bundle158";
+                        pseudoPrefabSO.assetPath = "Assets/data/recipedata/cookingstepdata/icons/Blender.png";
+                        Sprite icon = PseudoPrefabManager.LoadSpriteSubAsset(pseudoPrefabSO);
+                        sprites.Add(icon);
+                        UnityEngine.Object.DestroyImmediate(pseudoPrefabSO);
+                        cookingStepCount = 1;
+                    }
+                }
+            }
+            return sprites;
+        }
 
+        private static RecipeWidgetTile.TileDefinition GetTileDefinition(ScriptableObject recipeSO, OrderDefinitionNode recipe)
+        {
+            RecipeWidgetTile.TileDefinition tileDefinition = new RecipeWidgetTile.TileDefinition();
+            int cookingStepCount;
+            List<Sprite> sprites = GetSpriteList(recipeSO, recipe, out cookingStepCount);
+            tileDefinition.m_mainPictures = sprites.GetRange(0, sprites.Count - cookingStepCount);
+            tileDefinition.m_modifierPictures = sprites.GetRange(sprites.Count - cookingStepCount, cookingStepCount);
             return tileDefinition;
         }
 
-        public static OrderDefinitionNode GetOptionalRecipeNode(ScriptableObject recipeSO)
+        public static OrderDefinitionNode GetOrderDefinitionNodeCustomRecipeOptional(ScriptableObject recipeSO)
         {
             if (recipeSO is PseudoPrefabSO)
                 return PseudoPrefabManager.LoadAsset<OrderDefinitionNode>(recipeSO as PseudoPrefabSO);
@@ -187,7 +257,7 @@ namespace LevelEditor
                 node.m_composition = new OrderDefinitionNode[0];
                 node.m_optional = optionalBurgerSO.optionalSOs
                     .Where(x => x != optionalBurgerSO.bunSO)
-                    .Select(x => GetCustomRecipeOrIngredientNode(x))
+                    .Select(x => GetOrderDefinitionNode(x))
                     .Concat(new OrderDefinitionNode[] { GetIngredientOrderNode(optionalBurgerSO.bunSO) })
                     .ToArray();
 
@@ -226,7 +296,7 @@ namespace LevelEditor
                 node.m_cookingStep = PseudoPrefabManager.LoadAsset<CookingStepData>(optionalPizzaSO.cookingStepSO);
                 node.m_progress = optionalPizzaSO.cooked ? CookedCompositeOrderNode.CookingProgress.Cooked : CookedCompositeOrderNode.CookingProgress.Raw;
                 node.m_composition = new OrderDefinitionNode[] { GetIngredientOrderNode(optionalPizzaSO.doughSO) };
-                node.m_optional = optionalPizzaSO.optionalSOs.Select(x => GetCustomRecipeOrIngredientNode(x)).ToArray();
+                node.m_optional = optionalPizzaSO.optionalSOs.Select(x => GetOrderDefinitionNode(x)).ToArray();
 
                 GameObject platingPrefabAsset = PseudoPrefabManager.LoadAsset(customRecipeSO.modelSO);
                 GameObject platingPrefab = RuntimePrefabManager.CloneAsInactivePrefab(platingPrefabAsset);
@@ -245,7 +315,7 @@ namespace LevelEditor
             }
             else
             {
-                recipe = GetCustomRecipeOrderDefinitionNode(customRecipeSO);
+                recipe = GetOrderDefinitionNodeCustomRecipe(customRecipeSO);
             }
 
             recipe.name = customRecipeSO.recipeName;
@@ -284,7 +354,7 @@ namespace LevelEditor
         {
             var indices = Enumerable.Range(0, optionalSOs.Length);
             OrderDefinitionNode[] orderDefinitionNodes = indices.Select(
-                i => GetCustomRecipeOrIngredientNode(optionalSOs[i])).ToArray();
+                i => GetOrderDefinitionNode(optionalSOs[i])).ToArray();
             OrderToPrefabLookup.ContentPrefabLookup[] oldLookupArray = new OrderToPrefabLookup.ContentPrefabLookup[0];
             if (oldLookup != null)
             {
@@ -362,13 +432,6 @@ namespace LevelEditor
                     return null;
                 }
             }
-        }
-
-        public static OrderDefinitionNode GetCustomRecipeOrIngredientNode(ScriptableObject recipeSO)
-        {
-            return recipeSO is CustomRecipeSO ? 
-                GetCustomRecipeOrderDefinitionNode(recipeSO as CustomRecipeSO) : 
-                GetIngredientOrderNode(recipeSO as PseudoPrefabSO);
         }
 
         public static ItemOrderNode GetItemOrderNode(PseudoPrefabSO pseudoPrefabSO)

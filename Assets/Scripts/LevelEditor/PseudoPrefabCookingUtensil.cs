@@ -61,7 +61,7 @@ namespace LevelEditor
                     if (x is PseudoPrefabSORecipe)
                         return PseudoPrefabManager.LoadAsset<OrderDefinitionNode>(x as PseudoPrefabSORecipe);
                     else if (x is CustomRecipeSO)
-                        return RecipeHelper.GetCustomRecipeOrderDefinitionNode(x as CustomRecipeSO);
+                        return RecipeHelper.GetOrderDefinitionNodeCustomRecipe(x as CustomRecipeSO);
                     else if (x is PseudoPrefabSO)
                         return RecipeHelper.GetIngredientOrderNode(x as PseudoPrefabSO);
                     else return null;
