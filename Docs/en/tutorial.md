@@ -63,6 +63,7 @@ Assume that the level set `xxx` contains a single level, `xxx-1`.
 - Drag objects from `common01/prefabs` in the Project window into the scene or the Hierarchy.
 - To align objects to the grid, hold down Ctrl while moving them. The game's grid size is 1.2.
 - If temporary objects are not loaded correctly or if you have accidentally modified them, click Tools – Reload Pseudo Assets to reload them.
+- In Unity editor's top-right Layers dropdown, hide and lock the UI layer so you don't accidentally pick the UI Canvas in Scene view.
 
 ##### Gameplay Objects
 

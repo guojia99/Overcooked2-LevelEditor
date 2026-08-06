@@ -63,6 +63,7 @@
 - 在 Project 面板将 `common01/prefabs` 里的物体拖入场景或 Hierarchy。
 - 需要对齐网格的物体可以按住 Ctrl 进行移动。厨房网格的大小为 1.2。
 - 如果遇到没有正确加载临时物体或不小心操作了临时物体的情况，点击 Tools - Reload Pseudo Assets 重新加载。
+- 在编辑器右上角 Layers 下拉菜单中隐藏并锁定 UI 层，防止在 Scene 视图中选择到 UI 画布。
 
 ##### 游戏物体
 
