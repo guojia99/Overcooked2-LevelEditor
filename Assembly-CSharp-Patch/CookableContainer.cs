@@ -44,29 +44,51 @@ public class CookableContainer : MonoBehaviour
 	public bool AllowItemPlacement(GameObject _object, PlacementContext _context, IBaseCookable _iCookingHandler)
 	{
 		// patch
-		if (!_iCookingHandler.IsBurning() && m_approvedContentsList != null)
-		{
-            IOrderDefinition orderDefinition = _object.RequestInterface<IOrderDefinition>();
-            if (orderDefinition != null && m_approvedContentsList.GetPrefabForNode(orderDefinition.GetOrderComposition()) != null)
-            {
-                return true;
-            }
-        }
-        // patch
+		//CookableProperties cookableProperties = _object.RequestComponent<CookableProperties>();
+		//if (cookableProperties == null || !cookableProperties.AllowsCookingStep(_iCookingHandler.AccessCookingType))
+		//{
+		//	return false;
+		//}
+		//if (m_approvedContentsList != null)
+		//{
+		//	IOrderDefinition orderDefinition = _object.RequestInterface<IOrderDefinition>();
+		//	if (orderDefinition != null && m_approvedContentsList.GetPrefabForNode(orderDefinition.GetOrderComposition()) == null)
+		//	{
+		//		return false;
+		//	}
+		//}
+		//return !_iCookingHandler.IsBurning();
 
-        CookableProperties cookableProperties = _object.RequestComponent<CookableProperties>();
-		if (cookableProperties == null || !cookableProperties.AllowsCookingStep(_iCookingHandler.AccessCookingType))
-		{
+
+		if (m_approvedContentsList == null || _iCookingHandler.IsBurning()) 
 			return false;
-		}
-		if (m_approvedContentsList != null)
+        IOrderDefinition orderDefinition = _object.RequestInterface<IOrderDefinition>();
+        if (orderDefinition == null) 
+			return false;
+
+		// different utensil type && cooked -> false
+		AssembledDefinitionNode assembledDefinitionNode = orderDefinition.GetOrderComposition();
+		if (assembledDefinitionNode is CookedCompositeAssembledNode)
 		{
-			IOrderDefinition orderDefinition = _object.RequestInterface<IOrderDefinition>();
-			if (orderDefinition != null && m_approvedContentsList.GetPrefabForNode(orderDefinition.GetOrderComposition()) == null)
-			{
+			CookedCompositeAssembledNode cookedCompositeAssembledNode = assembledDefinitionNode as CookedCompositeAssembledNode;
+			if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Burnt)
 				return false;
-			}
+			if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Cooked &&
+				cookedCompositeAssembledNode.m_cookingStep.m_uID != _iCookingHandler.AccessCookingType.m_uID)
+				return m_approvedContentsList.GetPrefabForNode(cookedCompositeAssembledNode) != null;
 		}
-		return !_iCookingHandler.IsBurning();
+		if (assembledDefinitionNode is CompositeAssembledNode)
+		{
+            CompositeAssembledNode compositeAssembledNode = assembledDefinitionNode as CompositeAssembledNode;
+			foreach (AssembledDefinitionNode composition in compositeAssembledNode.m_composition)
+			{
+				if (m_approvedContentsList.GetPrefabForNode(composition) == null)
+					return false;
+			}
+            return true;
+		}
+
+		return m_approvedContentsList.GetPrefabForNode(orderDefinition.GetOrderComposition()) != null;
+		// patch
 	}
 }

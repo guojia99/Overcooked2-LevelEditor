@@ -36,15 +36,15 @@ public static class AssembledNodeTransfer
 					ServerCookingHandler serverCookingHandler = serverCookableContainer.GetCookingHandler();
 					if (serverCookingHandler != null && cookedCompositeAssembledNode.m_cookingStep.m_uID != serverCookingHandler.AccessCookingType.m_uID)
 					{
-						return serverCookableContainer.CanTransferPrecookedContents(new AssembledDefinitionNode[1] { _ingredientToAdd }, 0f);
-					}
-					else
-					{
+						if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Burnt)
+							return false;
+						if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Cooked)
+							return serverCookableContainer.CanTransferPrecookedContents(new AssembledDefinitionNode[1] { _ingredientToAdd }, 0f);
+                    }
 					// patch
-						float _progress;
-						AssembledDefinitionNode[] recookFromNode = GetRecookFromNode(_ingredientToAdd as CookedCompositeAssembledNode, out _progress);
-						return serverCookableContainer.CanTransferPrecookedContents(recookFromNode, _progress);
-					}
+					float _progress;
+					AssembledDefinitionNode[] recookFromNode = GetRecookFromNode(_ingredientToAdd as CookedCompositeAssembledNode, out _progress);
+					return serverCookableContainer.CanTransferPrecookedContents(recookFromNode, _progress);
 				}
 				if (_ingredientToAdd is MixedCompositeAssembledNode)
 				{
@@ -133,17 +133,27 @@ public static class AssembledNodeTransfer
                 ServerCookingHandler serverCookingHandler = serverCookableContainer.GetCookingHandler();
 				if (serverCookingHandler != null && cookedCompositeAssembledNode.m_cookingStep.m_uID != serverCookingHandler.AccessCookingType.m_uID)
 				{
-					serverCookableContainer.TransferPrecookedContents(new AssembledDefinitionNode[1] { _ingredientToAdd }, 0f);
-					return;
+                    if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Burnt)
+                        return;
+                    if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Cooked)
+					{
+                        serverCookableContainer.TransferPrecookedContents(new AssembledDefinitionNode[1] { _ingredientToAdd }, 0f);
+						return;
+                    }
+					if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Raw)
+					{
+                        float _progress1;
+                        AssembledDefinitionNode[] recookFromNode1 = GetRecookFromNode(cookedCompositeAssembledNode, out _progress1);
+                        serverCookableContainer.TransferPrecookedContents(recookFromNode1, 0f);
+                        return;
+                    }
+                    return;
 				}
-				else
-				{
 				// patch
-					float _progress;
-					AssembledDefinitionNode[] recookFromNode = GetRecookFromNode(_ingredientToAdd as CookedCompositeAssembledNode, out _progress);
-					serverCookableContainer.TransferPrecookedContents(recookFromNode, _progress);
-					return;
-				}
+				float _progress;
+				AssembledDefinitionNode[] recookFromNode = GetRecookFromNode(_ingredientToAdd as CookedCompositeAssembledNode, out _progress);
+				serverCookableContainer.TransferPrecookedContents(recookFromNode, _progress);
+				return;
 			}
 			if (_ingredientToAdd is MixedCompositeAssembledNode)
 			{
