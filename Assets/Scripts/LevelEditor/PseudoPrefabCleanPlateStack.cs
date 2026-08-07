@@ -21,6 +21,7 @@ namespace LevelEditor
                 {
                     GameObject plate = Instantiate(platePrefab, childGameObject.transform);
                     plate.GetComponent<EditorGridSnap>().enabled = false;
+                    plate.GetComponent<IngredientContainer>().m_capacity = 100;
                     plates.Add(plate);
                 }
 
