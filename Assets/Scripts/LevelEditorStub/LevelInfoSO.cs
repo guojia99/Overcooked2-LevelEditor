@@ -28,8 +28,8 @@ namespace LevelEditorStub
 
         [Header("Audio Settings")]
         [SerializeField] public PseudoPrefabSO inLevelMusicSO;
-        [SerializeField] public GameLoopingAudioTag[] inLevelAmbiences;
-        [SerializeField] public PseudoPrefabSO[] audioDirectorySOs;
+        [SerializeField] public GameLoopingAudioTag[] inLevelAmbiences = new GameLoopingAudioTag[0];
+        [SerializeField] public PseudoPrefabSO[] audioDirectorySOs = new PseudoPrefabSO[0];
 
         [Header("Other Settings")]
         [SerializeField] public bool disableDynamicParenting = true;
