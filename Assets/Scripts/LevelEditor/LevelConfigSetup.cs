@@ -31,9 +31,7 @@ namespace LevelEditor
             recipeList.name = config.name;
             int takeNum = config.debugRecipeCount == 0 ? config.recipes.Length : config.debugRecipeCount;
             ScriptableObject[] recipes = config.recipes.Take(takeNum).ToArray();
-            recipeList.m_recipes = recipes
-                .Select(x => RecipeHelper.GetRecipe(x))
-                .ToArray();
+            recipeList.m_recipes = recipes.Select(x => RecipeHelper.GetRecipe(x)).ToArray();
             configTemplate.m_rounds[0].m_recipes = recipeList;
 
             if (true)
@@ -61,6 +59,7 @@ namespace LevelEditor
                 }
 
                 List<OrderDefinitionNode> newRecipeMatchListItems = new List<OrderDefinitionNode>();
+                List<OrderDefinitionNode> optionalRecipeMatchListItems = new List<OrderDefinitionNode>();
 
                 if (!config.allIngredients.IsEmpty())
                 {
@@ -69,24 +68,28 @@ namespace LevelEditor
 
                 if (!config.optionalRecipeMatchListItems.IsEmpty())
                 {
-                    newRecipeMatchListItems.AddRange(config.optionalRecipeMatchListItems.Select(x => RecipeHelper.GetOrderDefinitionNodeCustomRecipeOptional(x)));
+                    optionalRecipeMatchListItems = config.optionalRecipeMatchListItems.Select(x => RecipeHelper.GetOrderDefinitionNodeCustomRecipeOptional(x)).ToList();
+                    newRecipeMatchListItems.AddRange(optionalRecipeMatchListItems);
                 }
 
                 newRecipeMatchListItems.AddRange(recipeList.m_recipes.Select(x => x.m_order));
 
-                if (recipes.Any(x => x is CustomRecipeSO))
+                // for optional burgers/pizzas/...
+                // the preparation container prefab is built in GetOrderDefinitionNodeCustomRecipeOptional()
+                // assign the prefab back to recipeList.m_recipes[i].m_order.m_platingPrefab
+                if (!config.optionalRecipeMatchListItems.IsEmpty())
                 {
                     for (int i = 0; i < recipes.Length; i++)
                     {
-                        if (!(config.recipes[i] is CustomRecipeSO)) continue;
-                        CustomRecipeSO customRecipeSO = (CustomRecipeSO)config.recipes[i];
-                        if (config.optionalRecipeMatchListItems == null || customRecipeSO.modelSO == null) continue;
+                        if (!(recipes[i] is CustomRecipeSO)) continue;
+                        CustomRecipeSO customRecipeSO = (CustomRecipeSO)recipes[i];
+                        if (customRecipeSO.modelSO == null) continue;
                         for (int j = 0; j < config.optionalRecipeMatchListItems.Length; j++)
                         {
                             CustomRecipeSO customRecipe = config.optionalRecipeMatchListItems[j] as CustomRecipeSO;
                             if (customRecipe != null && customRecipeSO.modelSO == customRecipe.modelSO)
                             {
-                                recipeList.m_recipes[i].m_order.m_platingPrefab = newRecipeMatchListItems[j].m_platingPrefab;
+                                recipeList.m_recipes[i].m_order.m_platingPrefab = optionalRecipeMatchListItems[j].m_platingPrefab;
                                 break;
                             }
                         }
