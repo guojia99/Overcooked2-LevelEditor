@@ -17,8 +17,18 @@ public static class AssembledNodeTransfer
 				{
 					return false;
 				}
-				AssembledDefinitionNode assembledDefinitionNode = _ingredientToAdd.Simpilfy();
-				CompositeAssembledNode compositeAssembledNode = assembledDefinitionNode as CompositeAssembledNode;
+                AssembledDefinitionNode assembledDefinitionNode = _ingredientToAdd.Simpilfy();
+                // patch
+                CookedCompositeAssembledNode cookedCompositeAssembledNode = assembledDefinitionNode as CookedCompositeAssembledNode;
+				if (cookedCompositeAssembledNode != null)
+				{
+					if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Burnt)
+						return false;
+					if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Cooked)
+						return serverMixableContainer.CanTransferPremixedContents(new AssembledDefinitionNode[1] { cookedCompositeAssembledNode }, 0f);
+				}
+                // patch
+                CompositeAssembledNode compositeAssembledNode = assembledDefinitionNode as CompositeAssembledNode;
 				if (compositeAssembledNode != null)
 				{
 					AssembledDefinitionNode[] composition = compositeAssembledNode.m_composition;
@@ -104,8 +114,21 @@ public static class AssembledNodeTransfer
 				serverMixableContainer.TransferPremixedContents(new AssembledDefinitionNode[1] { _ingredientToAdd }, 0f);
 				return;
 			}
-			AssembledDefinitionNode assembledDefinitionNode = _ingredientToAdd.Simpilfy();
-			CompositeAssembledNode compositeAssembledNode = assembledDefinitionNode as CompositeAssembledNode;
+            AssembledDefinitionNode assembledDefinitionNode = _ingredientToAdd.Simpilfy();
+            // patch
+            CookedCompositeAssembledNode cookedCompositeAssembledNode = assembledDefinitionNode as CookedCompositeAssembledNode;
+			if (cookedCompositeAssembledNode != null)
+			{
+				if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Burnt)
+					return;
+				if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Cooked)
+				{
+					serverMixableContainer.TransferPremixedContents(new AssembledDefinitionNode[1] { cookedCompositeAssembledNode }, 0f);
+					return;
+				}
+			}
+            // patch
+            CompositeAssembledNode compositeAssembledNode = assembledDefinitionNode as CompositeAssembledNode;
 			MixedCompositeAssembledNode mixedCompositeAssembledNode = ((!(assembledDefinitionNode is MixedCompositeAssembledNode)) ? (_ingredientToAdd as MixedCompositeAssembledNode) : (assembledDefinitionNode as MixedCompositeAssembledNode));
 			float normalisedMixingProgress = 0f;
 			if (mixedCompositeAssembledNode != null && mixedCompositeAssembledNode.m_recordedProgress.HasValue)
