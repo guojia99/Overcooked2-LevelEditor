@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 namespace LevelEditorStub
 {
-    [CreateAssetMenu(menuName = "LevelEditor/PseudoPrefabSORecipe")]
+    [CreateAssetMenu(menuName = "LevelEditor/PseudoPrefabSORecipe", order = -1000)]
     public class PseudoPrefabSORecipe : PseudoPrefabSO
     {
         public int score;

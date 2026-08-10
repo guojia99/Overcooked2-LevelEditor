@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace LevelEditorStub
 {
-    [CreateAssetMenu(menuName = "LevelEditor/PseudoPrefabSO")]
+    [CreateAssetMenu(menuName = "LevelEditor/PseudoPrefabSO", order = -1000)]
     public class PseudoPrefabSO : ScriptableObject {
 
         [SerializeField] public string prefabName;

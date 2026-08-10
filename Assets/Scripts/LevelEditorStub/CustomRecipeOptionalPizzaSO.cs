@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace LevelEditorStub
 {
-    [CreateAssetMenu(menuName = "LevelEditor/CustomRecipeOptionalPizzaSO")]
+    [CreateAssetMenu(menuName = "LevelEditor/CustomRecipeOptionalPizzaSO", order = -1000)]
     public class CustomRecipeOptionalPizzaSO : CustomRecipeSO
     {
         [Header("Optional Pizza")]

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace LevelEditorStub
 {
-    [CreateAssetMenu(menuName = "LevelEditor/LevelConfigSetupPerPlayerCountSO")]
+    [CreateAssetMenu(menuName = "LevelEditor/LevelConfigSetupPerPlayerCountSO", order = -1000)]
     public class LevelConfigSetupPerPlayerCountSO : ScriptableObject
     {
         public int orderLifeTime = 181;

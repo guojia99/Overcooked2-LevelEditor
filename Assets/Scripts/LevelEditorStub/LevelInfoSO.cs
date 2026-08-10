@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace LevelEditorStub
 {
-    [CreateAssetMenu(menuName = "LevelEditor/LevelInfoSO")]
+    [CreateAssetMenu(menuName = "LevelEditor/LevelInfoSO", order = -1000)]
     public class LevelInfoSO : ScriptableObject
 	{
         [SerializeField] public string levelName;
