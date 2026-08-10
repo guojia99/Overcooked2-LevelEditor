@@ -16,6 +16,8 @@ namespace LevelEditor
 
             IngredientContainer ingredientContainer = childGameObject.GetComponent<IngredientContainer>();
             ingredientContainer.m_capacity = cookingUtensilStub.capacity;
+            if (cookingUtensilStub.capacity > 1 && childGameObject.GetComponent<IngredientContentGUI>() != null)
+                childGameObject.GetComponent<IngredientContentGUI>().m_displayEmptyElements = true;
 
             SpecificPseudoPrefabTag specificPseudoPrefabTag = GetComponent<SpecificPseudoPrefabTag>();
             if (specificPseudoPrefabTag != null && !string.IsNullOrEmpty(specificPseudoPrefabTag.prefabTag))
