@@ -43,6 +43,7 @@ namespace LevelEditor
 
             // griddlepan's m_approvedContentsList is originally null
             CookableContainer cookableContainer = childGameObject.GetComponent<CookableContainer>();
+            MixableContainer mixableContainer = childGameObject.GetComponent<MixableContainer>();
             if (cookableContainer != null && cookableContainer.m_cosmeticsPrefab != null)
             {
                 GriddlePanCosmeticDecisions griddlePanCosmeticDecisions = cookableContainer.m_cosmeticsPrefab.GetComponent<GriddlePanCosmeticDecisions>();
@@ -66,47 +67,54 @@ namespace LevelEditor
                         return RecipeHelper.GetIngredientOrderNode(x as PseudoPrefabSO);
                     else return null;
                 }).ToArray();
+                GameObject[] models = cookingUtensilStub.models;
+                PseudoPrefabSO[] modelSOs = cookingUtensilStub.modelSOs;
 
-                if (childGameObject.GetComponent<MixableContainer>() != null)
+                if (mixableContainer != null)
                 {
-                    MixableContainer mixableContainer = childGameObject.GetComponent<MixableContainer>();
-                    mixableContainer.m_ApprovedIngredients = orderDefinitionNodes;
+                    CookingHandler cookingHandler = childGameObject.GetComponent<CookingHandler>();
+                    List<int> ingredientIndexList = new List<int>();
+                    List<int> cookedIndexList = new List<int>();
+                    for (int i = 0; i < orderDefinitionNodes.Length; i++)
+                    {
+                        if (cookingHandler != null &&
+                            orderDefinitionNodes[i] is CookedCompositeOrderNode &&
+                            (orderDefinitionNodes[i] as CookedCompositeOrderNode).m_cookingStep.m_uID == cookingHandler.m_cookingType.m_uID)
+                        {
+                            cookedIndexList.Add(i);
+                        }
+                        else
+                        {
+                            ingredientIndexList.Add(i);
+                        }
+                    }
+                    if (ingredientIndexList.Count > 0)
+                    {
+                        mixableContainer.m_ApprovedIngredients = ingredientIndexList.Select(i => orderDefinitionNodes[i]).ToArray();
+                    }
+                    orderDefinitionNodes = cookedIndexList.Select(i => orderDefinitionNodes[i]).ToArray();
+                    models = cookedIndexList.Select(i => i < models.Length ? models[i] : null).ToArray();
+                    modelSOs = cookedIndexList.Select(i => i < modelSOs.Length ? modelSOs[i] : null).ToArray();
                 }
 
-                else
+                if (cookableContainer != null && !orderDefinitionNodes.IsEmpty())
                 {
                     OrderToPrefabLookup oldLookup = cookableContainer.m_approvedContentsList;
                     OrderToPrefabLookup newLookup = ScriptableObject.CreateInstance<OrderToPrefabLookup>();
                     newLookup.name = "Lookup_" + gameObject.name;
-                    OrderToPrefabLookup.ContentPrefabLookup[] oldLookupArray = new OrderToPrefabLookup.ContentPrefabLookup[0];
-                    GameObject m_prefab_default = null;
-                    if (oldLookup == null && cookableContainer.m_cosmeticsPrefab != null)
-                    {
-                        GriddlePanCosmeticDecisions griddlePanCosmeticDecisions = cookableContainer.m_cosmeticsPrefab.GetComponent<GriddlePanCosmeticDecisions>();
-                        if (griddlePanCosmeticDecisions != null)
-                        {
-                            m_prefab_default = (GameObject)griddlePanCosmeticDecisions.GetType()
-                                .GetField("m_burntPrefab", BindingFlags.Instance | BindingFlags.NonPublic)
-                                .GetValue(griddlePanCosmeticDecisions);
-                        }
-                    }
-                    else
-                    {
-                        oldLookupArray = (OrderToPrefabLookup.ContentPrefabLookup[])oldLookup.GetType()
-                            .GetField("m_lookupArray", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
-                            .GetValue(oldLookup);
-                        m_prefab_default = oldLookupArray[0].m_prefab;
-                    }
+                    OrderToPrefabLookup.ContentPrefabLookup[] oldLookupArray = (OrderToPrefabLookup.ContentPrefabLookup[])oldLookup.GetType()
+                        .GetField("m_lookupArray", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                        .GetValue(oldLookup);
+                    GameObject m_prefab_default = oldLookupArray[0].m_prefab;
                     List<OrderToPrefabLookup.ContentPrefabLookup> allowedIngredients = new List<OrderToPrefabLookup.ContentPrefabLookup>();
 
-                    for (int i = 0; i < cookingUtensilStub.allowedIngredientSOs.Length; i++)
+                    for (int i = 0; i < orderDefinitionNodes.Length; i++)
                     {
-                        ScriptableObject ingredientSO = cookingUtensilStub.allowedIngredientSOs[i];
                         GameObject prefab;
-                        if (i < cookingUtensilStub.models.Length && cookingUtensilStub.models[i] != null)
-                            prefab = cookingUtensilStub.models[i];
-                        else if (i < cookingUtensilStub.modelSOs.Length && cookingUtensilStub.modelSOs[i] != null)
-                            prefab = PseudoPrefabManager.LoadAsset(cookingUtensilStub.modelSOs[i]);
+                        if (i < models.Length && models[i] != null)
+                            prefab = models[i];
+                        else if (i < modelSOs.Length && modelSOs[i] != null)
+                            prefab = PseudoPrefabManager.LoadAsset(modelSOs[i]);
                         else
                         {
                             int index = oldLookupArray.FindIndex_Predicate(x => x.m_content.Equals(orderDefinitionNodes[i]));
@@ -129,7 +137,27 @@ namespace LevelEditor
 
                     if (cookableContainer.m_cosmeticsPrefab != null)
                     {
-                        if (cookableContainer.m_cosmeticsPrefab.GetComponent<OverlapModelsMealDecisions>() != null)
+                        if (cookableContainer.m_cosmeticsPrefab.RequestComponentRecursive<MixerComboCosmeticDecisions>() != null)
+                        {
+                            GameObject cosmeticsPrefab = RuntimePrefabManager.CloneAsInactivePrefab(cookableContainer.m_cosmeticsPrefab);
+                            MixerComboCosmeticDecisions mixerComboCosmeticDecisions = cosmeticsPrefab.RequestComponentRecursive<MixerComboCosmeticDecisions>();
+                            ComboOrderToPrefabLookup comboOrderToPrefabLookup = ScriptableObject.CreateInstance<ComboOrderToPrefabLookup>();
+                            comboOrderToPrefabLookup.name = newLookup.name;
+                            ComboOrderToPrefabLookup.ContentPrefabLookup[] contentPrefabLookups = allowedIngredients
+                                .Select(x => new ComboOrderToPrefabLookup.ContentPrefabLookup()
+                                {
+                                    m_content = new OrderDefinitionNode[] { x.m_content },
+                                    m_prefab = x.m_prefab,
+                                }).ToArray();
+                            comboOrderToPrefabLookup.GetType()
+                                .GetField("m_lookupArray", BindingFlags.Instance | BindingFlags.NonPublic)
+                                .SetValue(comboOrderToPrefabLookup, contentPrefabLookups);
+                            typeof(ComboCosmeticDecisions)
+                                .GetField("m_comboPrefabLookup", BindingFlags.Instance | BindingFlags.NonPublic)
+                                .SetValue(mixerComboCosmeticDecisions, comboOrderToPrefabLookup);
+                            cookableContainer.m_cosmeticsPrefab = cosmeticsPrefab;
+                        }
+                        else if (cookableContainer.m_cosmeticsPrefab.GetComponent<OverlapModelsMealDecisions>() != null)
                         {
                             GameObject cosmeticsPrefab = RuntimePrefabManager.CloneAsInactivePrefab(cookableContainer.m_cosmeticsPrefab);
                             typeof(OverlapModelsMealDecisions)
@@ -145,8 +173,8 @@ namespace LevelEditor
                             foreach (var ingredient in allowedIngredients)
                             {
                                 CookedCompositeOrderNode cookedCompositeOrderNode = ingredient.m_content as CookedCompositeOrderNode;
-                                if (cookedCompositeOrderNode != null && 
-                                    cookedCompositeOrderNode.m_cookingStep == cookingStepData && 
+                                if (cookedCompositeOrderNode != null &&
+                                    cookedCompositeOrderNode.m_cookingStep.m_uID == cookingStepData.m_uID &&
                                     cookedCompositeOrderNode.m_composition != null &&
                                     cookedCompositeOrderNode.m_composition.Length == 1)
                                 {
