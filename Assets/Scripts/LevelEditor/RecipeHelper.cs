@@ -262,7 +262,7 @@ namespace LevelEditor
                     .ToArray();
 
                 GameObject platingPrefabAsset = PseudoPrefabManager.LoadAsset(customRecipeSO.modelSO);
-                GameObject platingPrefab = RuntimePrefabManager.CloneAsInactivePrefab(platingPrefabAsset);
+                GameObject platingPrefab = RuntimePrefabManager.CloneAsInactivePrefab(platingPrefabAsset, clearOnRestart: false);
                 BurgerBunCosmeticDecisions burgerCosmetic = platingPrefab.GetComponent<BurgerBunCosmeticDecisions>();
                 BurritoCosmeticDecisions burritoCosmetic = platingPrefab.GetComponent<BurritoCosmeticDecisions>();
                 if (burgerCosmetic != null)
@@ -299,7 +299,7 @@ namespace LevelEditor
                 node.m_optional = optionalPizzaSO.optionalSOs.Select(x => GetOrderDefinitionNode(x)).ToArray();
 
                 GameObject platingPrefabAsset = PseudoPrefabManager.LoadAsset(customRecipeSO.modelSO);
-                GameObject platingPrefab = RuntimePrefabManager.CloneAsInactivePrefab(platingPrefabAsset);
+                GameObject platingPrefab = RuntimePrefabManager.CloneAsInactivePrefab(platingPrefabAsset, clearOnRestart: false);
                 PizzaCosmeticDecisions pizzaCosmetic = platingPrefab.GetComponent<PizzaCosmeticDecisions>();
                 OrderToPrefabLookup uncookedLookup = GetOrderToPrefabLookupPizza(optionalPizzaSO, false, pizzaCosmetic);
                 OrderToPrefabLookup cookedLookup = GetOrderToPrefabLookupPizza(optionalPizzaSO, true, pizzaCosmetic);
