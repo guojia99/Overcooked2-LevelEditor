@@ -18,6 +18,10 @@ namespace LevelEditorStub
         [Header("Recipe Settings")]
         [SerializeField] public ScriptableObject[] recipes;
         [SerializeField] public int debugRecipeCount;
+        [Range(1, 10)]
+        [SerializeField] public int minOrderCount = 2;
+        [Range(1, 10)]
+        [SerializeField] public int maxOrderCount = 5;
 
         [Header("Recipe Match List Settings")]
         [SerializeField] public bool excludeStoryRecipeMatchList;
