@@ -14,8 +14,8 @@ MonoBehaviour:
   levelSetName: Overcooked 1 - Story
   levelSetNameZH: "\u80E1\u95F9\u53A8\u623F 1 - \u4E3B\u7EBF"
   author: 
-  uid: 1ff3b807-bc0f-bc41-a569-11a890c657ad
-  version: 1.0
+  uid: c07fa164-1d9b-7235-9bc3-828160dcdf5e
+  version: 1.0.1
   levelInfos:
   - {fileID: 11400000, guid: 94ec21b3ff46f674b8fbd5463edddce0, type: 2}
   - {fileID: 11400000, guid: e451db970bd80ef47b7c2cef22baf933, type: 2}
@@ -45,5 +45,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b8077f91b885fdf408bf79963fa788f9, type: 2}
   - {fileID: 11400000, guid: 86428439f7a189944951fa7ac4837ffc, type: 2}
   - {fileID: 11400000, guid: 1b28ee8c5b75dd84893a8d5c1465daba, type: 2}
-  lastVersion: 1.0
+  lastVersion: 1.0.1
   baseUID: a6b0942e-d5f3-494c-acef-d7fe8f3e025d

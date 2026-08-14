@@ -152,10 +152,16 @@ namespace LevelEditor
             m_data.ReadyUIPrefab = LoadAsset(stub.ReadySO);
             m_data.TutorialPopup.Prefab = LoadAsset(stub.TutorialSplashSO);
 
+            component = stub.FlowManagerGO.GetComponent<KitchenFlowControllerBase>();
+            (component as KitchenFlowControllerBase).m_maxOrdersAllowed = stub.levelInfo.maxOrderCount;
+
             component = stub.RecipeUIGO.GetComponent<RecipeFlowGUI>();
             component.GetType()
                 .GetField("m_recipeWidgetPrefab", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                 .SetValue(component, LoadAsset(stub.RecipeUISO).GetComponent<RecipeWidgetUIController>());
+            component.GetType()
+                .GetField("m_maxOrdersAllowed", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                .SetValue(component, stub.levelInfo.maxOrderCount);
 
             component = stub.AudioManagerGO.GetComponent<CampaignAudioManager>();
             AudioClip music = stub.levelInfo.inLevelMusicSO == null ? null : LoadAsset<AudioClip>(stub.levelInfo.inLevelMusicSO);

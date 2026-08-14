@@ -14,13 +14,13 @@ MonoBehaviour:
   levelSetName: Test
   levelSetNameZH: "\u6D4B\u8BD5"
   author: GUA
-  uid: e925aed5-a4a7-0cef-cfa3-f0145ee5226f
-  version: 0.5
+  uid: 24f57368-9ec4-a216-ec44-824ffdc33d66
+  version: 0.5.1
   levelInfos:
   - {fileID: 11400000, guid: b4bfb84fd5e2d034faffb2259996e3d8, type: 2}
   - {fileID: 11400000, guid: c214b4ccce80b2f488438d27a7897947, type: 2}
   - {fileID: 11400000, guid: ef15d00436aa4e3428b704451b417bcf, type: 2}
   - {fileID: 11400000, guid: 5ee2ab0bcadfdfa43bd37ca691d6b393, type: 2}
   - {fileID: 11400000, guid: 4f9a3ab615828814b9575eed5e13d565, type: 2}
-  lastVersion: 0.5
+  lastVersion: 0.5.1
   baseUID: 5a683a41-080d-4306-94b2-832528ba350a
