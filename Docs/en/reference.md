@@ -231,7 +231,7 @@ In the directory `common*/prefabs/art`, organized into subdirectories by theme.
   - `levelName` - Level display name (English).
   - `levelNameZH` - Level display name (Chinese).
   - `screenshot` - Level screenshot.
-  - `sceneName` - Level scene name. __It must match the filename of the packaged scene bundle exactly and must not duplicate any scene filename in any level set. Avoid using simple names.__
+  - `sceneName` - Level scene name. __It must match the filename of the packaged scene bundle exactly and must not duplicate any scene filename in any level set. Avoid using simple names. Avoid using uppercase letters.__
   - `recipes` - All recipes in the level. ([Available Recipes](#Available-Recipes))
   - `debugRecipeCount` - Set to 0.
   - `optionalRecipeMatchListItems` - Other allowed food combinations. In pizza levels, in addition to the recipes appear in orders, other food combinations can also be plated; these must be added to this list. See `LevelInfo_OC1_Story_4_1` for reference.
