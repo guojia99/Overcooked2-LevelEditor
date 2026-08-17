@@ -73,7 +73,22 @@ public class CookableContainer : MonoBehaviour
 			CookedCompositeAssembledNode cookedCompositeAssembledNode = assembledDefinitionNode as CookedCompositeAssembledNode;
 			if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Burnt)
 				return false;
+			// plated foods can't be returned to the utensil except for fryingpan
 			if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Cooked &&
+				_object.GetComponent<Plate>() != null &&
+				cookedCompositeAssembledNode.m_cookingStep.m_uID == _iCookingHandler.AccessCookingType.m_uID)
+			{
+				if (cookedCompositeAssembledNode.m_composition != null && cookedCompositeAssembledNode.m_composition.Length > 1)
+					return false;
+				if (m_cosmeticsPrefab == null || m_cosmeticsPrefab.GetComponent<FryingPanCosmeticDecisions>() == null)
+					return false;
+            }
+			// cooked cake can't transfer to another mixbowl
+			if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Cooked &&
+				cookedCompositeAssembledNode.m_cookingStep.m_uID == _iCookingHandler.AccessCookingType.m_uID &&
+				_object.GetComponent<MixableContainer>() != null)
+				return false;
+            if (cookedCompositeAssembledNode.m_progress == CookedCompositeOrderNode.CookingProgress.Cooked &&
 				cookedCompositeAssembledNode.m_cookingStep.m_uID != _iCookingHandler.AccessCookingType.m_uID)
 				return m_approvedContentsList.GetPrefabForNode(cookedCompositeAssembledNode) != null;
 		}

@@ -120,6 +120,13 @@ public class MixableContainer : MonoBehaviour
         if (orderDefinition == null)
             return false;
 
+        // glass to blender -> false
+        if (_object.GetComponent<Plate>() != null &&
+            gameObject.GetComponent<BlenderCosmeticDecisions>() != null)
+        {
+            return false;
+        }
+        
         AssembledDefinitionNode assembledDefinitionNode = orderDefinition.GetOrderComposition();
         if (_object.RequestComponent<MixableContainer>() != null)
         {
