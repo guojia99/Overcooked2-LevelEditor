@@ -30,6 +30,7 @@ public class LayoutRuntimeSwitchLink : MonoBehaviour
 
     private GameObject m_buttonChild;
     private bool m_ready;
+    private bool m_useSetup; // 按钮包装带 PseudoPrefabSwitch（宿主 Setup 会生成 TriggerOnObject）
 
     private void Update()
     {
@@ -43,6 +44,7 @@ public class LayoutRuntimeSwitchLink : MonoBehaviour
         if (!m_ready)
         {
             m_ready = true;
+            m_useSetup = GetComponent<PseudoPrefabSwitch>() != null;
             AddReenableRelay();
             AddTriggerRelay();
         }
@@ -82,6 +84,11 @@ public class LayoutRuntimeSwitchLink : MonoBehaviour
 
     private void AddTriggerRelay()
     {
+        // 宿主 Setup 路径（包装带 PseudoPrefabSwitch）：Setup 已在 child 生成
+        // TriggerOnObject（发到目标伪根 → forwarder 转发），再加 relay 会双重触发
+        // （机器跳档）。仅非 Setup 的按钮（common03 DLC8 按钮等）走 relay。
+        if (m_useSetup)
+            return;
         var relay = m_buttonChild.GetComponent<LayoutRuntimeSwitchRelay>();
         if (relay == null)
             relay = m_buttonChild.AddComponent<LayoutRuntimeSwitchRelay>();
@@ -91,6 +98,10 @@ public class LayoutRuntimeSwitchLink : MonoBehaviour
 
     private void EnsureForwarder(GameObject target)
     {
+        // 仅 Setup 路径需要 forwarder（Setup 的 TriggerOnObject 发到目标伪根 → 转发到 child）；
+        // relay 路径直达 child，不需要。
+        if (!m_useSetup)
+            return;
         if (target.GetComponent<LayoutRuntimeForwarder>() == null)
             target.AddComponent<LayoutRuntimeForwarder>();
     }
