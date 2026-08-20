@@ -36,6 +36,15 @@ public static class AssembledNodeTransfer
 				}
 				return serverMixableContainer.CanTransferPremixedContents(new AssembledDefinitionNode[1] { assembledDefinitionNode }, 0f);
 			}
+            // patch
+            // _container is not a mixbowl and _ingredientToAdd is unmixed
+			if (_ingredientToAdd is MixedCompositeAssembledNode)
+			{
+				MixedCompositeAssembledNode mixedCompositeAssembledNode = _ingredientToAdd as MixedCompositeAssembledNode;
+				if (mixedCompositeAssembledNode.m_progress != MixedCompositeOrderNode.MixingProgress.Mixed)
+					return false;
+			}
+            // patch
 			if ((_container as MonoBehaviour).gameObject.RequestComponent<ServerCookableContainer>() != null)
 			{
 				ServerCookableContainer serverCookableContainer = (_container as MonoBehaviour).gameObject.RequestComponent<ServerCookableContainer>();
