@@ -55,66 +55,10 @@ public static class LayoutRuntimeHotPot
         KeepWokFlameOn();
         FixSoupLevel();
         AlertWhenCooked();
-        CenterBurnerFlames();
-        SnapPushablePotToBurner();
     }
 
-    private static readonly HashSet<CookingRegion> s_flameCentered = new HashSet<CookingRegion>();
-
-    /// <summary>灶台火焰对中：bundle 实测灶台的触发区中心在局部 (-0.6, +0.6)，
-    ///  而火焰粒子环中心在局部 (+0.6, +0.6)——两者差 1.2（一格）。锅吸到触发区中心
-    ///  后火焰环从锅体右侧穿出（穿模）。把火焰环（glow + PFX）整体平移到触发区中心
-    ///  （XZ），高度曲线裁剪逻辑不变。每灶一次（幂等）。</summary>
-    private static void CenterBurnerFlames()
-    {
-        foreach (var region in Object.FindObjectsOfType<CookingRegion>())
-        {
-            if (region == null || !region.enabled || region.m_TriggerArea == null)
-                continue;
-            if (region.m_flameEffects == null || region.m_flameEffects.Length == 0)
-                continue;
-            if (s_flameCentered.Contains(region))
-                continue;
-            var box = region.m_TriggerArea as BoxCollider;
-            if (box == null)
-                continue;
-            // 触发区局部中心（XZ）；火焰环当前质心（XZ）
-            var triggerCenter = new Vector2(box.center.x, box.center.z);
-            float cx = 0f, cz = 0f;
-            int n = 0;
-            foreach (var pfx in region.m_flameEffects)
-            {
-                if (pfx == null) continue;
-                cx += pfx.transform.localPosition.x;
-                cz += pfx.transform.localPosition.z;
-                n++;
-            }
-            if (n == 0)
-                continue;
-            var centroid = new Vector2(cx / n, cz / n);
-            var shift = triggerCenter - centroid;
-            if (shift.sqrMagnitude < 0.01f)
-            {
-                s_flameCentered.Add(region);
-                continue;
-            }
-            foreach (var pfx in region.m_flameEffects)
-            {
-                if (pfx == null) continue;
-                pfx.transform.localPosition = new Vector3(
-                    pfx.transform.localPosition.x + shift.x,
-                    pfx.transform.localPosition.y,
-                    pfx.transform.localPosition.z + shift.y);
-            }
-            if (region.m_glowEffect != null)
-                region.m_glowEffect.transform.localPosition = new Vector3(
-                    region.m_glowEffect.transform.localPosition.x + shift.x,
-                    region.m_glowEffect.transform.localPosition.y,
-                    region.m_glowEffect.transform.localPosition.z + shift.y);
-            s_flameCentered.Add(region);
-        }
-    }
-
+    
+    
     private static FieldInfo s_pilotGridTargetField;
 
     /// <summary>可移动火锅灶台吸附：锅（载具）碰撞中心进入灶台触发区后，把宿主
