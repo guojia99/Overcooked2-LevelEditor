@@ -35,10 +35,10 @@ namespace LevelEditor
             SubTexture2D subTexture = spawnableItem.GetSubTexture();
             ItemCrateCosmeticDecisions itemCrateCosmeticDecisions = childGameObject.GetComponent<ItemCrateCosmeticDecisions>();
             Transform transform = childGameObject.transform.FindChildRecursive(itemCrateCosmeticDecisions.m_crateLidMeshName);
-            Renderer component2 = transform.GetComponent<SkinnedMeshRenderer>();
+            Renderer component2 = transform.GetComponent<Renderer>();
             if (component2 == null)
             {
-                component2 = childGameObject.transform.GetComponent<MeshRenderer>();
+                component2 = childGameObject.transform.GetComponent<Renderer>();
             }
             Material[] materials = component2.sharedMaterials;
             Material material = new Material(materials[itemCrateCosmeticDecisions.m_materialNumber]);

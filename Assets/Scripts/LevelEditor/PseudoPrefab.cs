@@ -47,6 +47,14 @@ namespace LevelEditor
                 editorGridSnap.GetType()
                     .GetField("m_constrainY", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                     .SetValue(editorGridSnap, false);
+                if (childGameObject.GetComponent<Teleportal>() != null ||
+                    childGameObject.GetComponent<PlateStation>() != null ||
+                    childGameObject.GetComponentInChildren<WashingStation>() != null ||
+                    childGameObject.GetComponent<TriggerZone>() != null ||
+                    childGameObject.GetComponent<PhysicalAttachment>() != null)
+                {
+                    editorGridSnap.enabled = false;
+                }
             }
             if (editorGridSnap != null &&
                 gameObject.transform.FindParentRecursive("Animated Objects") != null)
@@ -60,16 +68,6 @@ namespace LevelEditor
                     dynamicGridLocation.enabled = false;
                     dynamicGridLocation.enabled = true;
                 }
-            }
-            if (editorGridSnap != null && !Application.isPlaying && (
-                childGameObject.GetComponent<Teleportal>() != null || 
-                childGameObject.GetComponent<PlateStation>() != null ||
-                childGameObject.GetComponentInChildren<WashingStation>() != null ||
-                childGameObject.GetComponent<TriggerZone>() != null ||
-                childGameObject.GetComponent<PhysicalAttachment>() != null
-                ))
-            {
-                editorGridSnap.enabled = false;
             }
 
             foreach (RendererInfo rendererInfo in childGameObject.RequestComponentsRecursive<RendererInfo>())
@@ -308,14 +306,7 @@ namespace LevelEditor
 
                 case "snow":
                     {
-                        Renderer renderer = childGameObject.GetComponent<Renderer>();
-                        if (!PseudoPrefabManager.Instance.editedMaterials.ContainsKey(renderer.sharedMaterial.name))
-                        {
-                            Material material = new Material(renderer.sharedMaterial);
-                            material.SetColor("_Colour", new Color32(204, 204, 204, 255));
-                            PseudoPrefabManager.Instance.editedMaterials.Add(renderer.sharedMaterial.name, material);
-                        }
-                        renderer.sharedMaterial = PseudoPrefabManager.Instance.editedMaterials[renderer.sharedMaterial.name];
+                        HandleSpecificPrefabs_Snow();
                         break;
                     }
 
@@ -501,8 +492,100 @@ namespace LevelEditor
                         break;
                     }
 
+                case "dlc03_diners_01":
+                    {
+                        PseudoPrefabSO matSO = ScriptableObject.CreateInstance<PseudoPrefabSO>();
+                        matSO.prefabName = "Plate";
+                        matSO.bundleName = "bundle38";
+                        matSO.assetPath = "Assets\\models\\props\\materials\\Plate.mat".Replace("\\", "/");
+                        Material mat1 = PseudoPrefabManager.LoadAsset<Material>(matSO);
+                        childGameObject.transform.Find("mince_pies_01/m_sk_plate_02").GetComponent<Renderer>().sharedMaterial = mat1;
+                        DestroyImmediate(matSO);
+                        break;
+                    }
+
+                case "iceberg":
+                    {
+                        Renderer[] renderers = childGameObject.RequestComponentsRecursive<Renderer>();
+                        foreach (Renderer renderer in renderers)
+                        {
+                            if (!PseudoPrefabManager.Instance.editedMaterials.ContainsKey(renderer.sharedMaterial.name))
+                            {
+                                Material material = new Material(renderer.sharedMaterial);
+                                material.SetFloat("_Power_01", 0.002f);
+                                PseudoPrefabManager.Instance.editedMaterials.Add(renderer.sharedMaterial.name, material);
+                            }
+                            renderer.sharedMaterial = PseudoPrefabManager.Instance.editedMaterials[renderer.sharedMaterial.name];
+                        }
+                        break;
+                    }
+
+                case "dlc03_stall":
+                    {
+                        Light[] lights = childGameObject.RequestComponentsRecursive<Light>();
+                        foreach (Light light in lights)
+                            light.enabled = false;
+                        HandleSpecificPrefabs_Snow();
+                        break;
+                    }
+
+                case "wind":
+                    {
+                        EditorGridSnap editorGridSnap = childGameObject.GetComponent<EditorGridSnap>();
+                        FlowbasedComponentActivation flowbasedComponentActivation = childGameObject.GetComponent<FlowbasedComponentActivation>();
+                        WindCosmeticDecisions windCosmeticDecisions = childGameObject.GetComponent<WindCosmeticDecisions>();
+                        if (editorGridSnap != null) 
+                            editorGridSnap.enabled = false;
+                        if (flowbasedComponentActivation != null)
+                        {
+                            flowbasedComponentActivation.GetType()
+                                .GetField("m_activeInRound", BindingFlags.Instance | BindingFlags.NonPublic)
+                                .SetValue(flowbasedComponentActivation, false);
+                            flowbasedComponentActivation.GetType()
+                                .GetField("m_activeOutOfRound", BindingFlags.Instance | BindingFlags.NonPublic)
+                                .SetValue(flowbasedComponentActivation, false);
+                        }
+                        if (windCosmeticDecisions != null)
+                            windCosmeticDecisions.enabled = false;
+                        break;
+                    }
+
+                case "m_streetlamp_01":
+                    {
+                        childGameObject.transform.Find("Point light").gameObject.SetActive(false);
+                        HandleSpecificPrefabs_Snow();
+                        break;
+                    }
+
                 default:
                     break;
+            }
+        }
+
+        private void HandleSpecificPrefabs_Snow()
+        {
+            Renderer[] renderers = childGameObject.RequestComponentsRecursive<MeshRenderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                Material[] materials = renderer.sharedMaterials;
+                int snowIndex = -1;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    if (materials[i].name == "mat_dlc3_snow_01")
+                    {
+                        snowIndex = i;
+                        break;
+                    }
+                }
+                if (snowIndex == -1) continue;
+                if (!PseudoPrefabManager.Instance.editedMaterials.ContainsKey(materials[snowIndex].name))
+                {
+                    Material material = new Material(materials[snowIndex]);
+                    material.SetColor("_Colour", new Color32(204, 204, 204, 255));
+                    PseudoPrefabManager.Instance.editedMaterials.Add(materials[snowIndex].name, material);
+                }
+                Material snowMat = PseudoPrefabManager.Instance.editedMaterials[materials[snowIndex].name];
+                renderer.sharedMaterials = materials.Select((x, i) => i == snowIndex ? snowMat : x).ToArray();
             }
         }
 
