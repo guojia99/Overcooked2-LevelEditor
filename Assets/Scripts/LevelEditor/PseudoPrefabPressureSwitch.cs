@@ -43,10 +43,12 @@ namespace LevelEditor
                 triggerOnAnimatorEnter.m_targetAnimator = switchStub.animatorToTrigger;
                 triggerOnAnimatorEnter.m_triggerToReceive = "Entered";
                 triggerOnAnimatorEnter.m_triggerToFire = switchStub.triggerOnAnimatorEnter;
+                triggerOnAnimatorEnter.m_triggerToFireHash = Animator.StringToHash(triggerOnAnimatorEnter.m_triggerToFire);
                 var triggerOnAnimatorExit = childGameObject.AddComponent<TriggerOnAnimator>();
                 triggerOnAnimatorExit.m_targetAnimator = switchStub.animatorToTrigger;
                 triggerOnAnimatorExit.m_triggerToReceive = "Exited";
                 triggerOnAnimatorExit.m_triggerToFire = switchStub.triggerOnAnimatorExit;
+                triggerOnAnimatorExit.m_triggerToFireHash = Animator.StringToHash(triggerOnAnimatorExit.m_triggerToFire);
             }
         }
     }

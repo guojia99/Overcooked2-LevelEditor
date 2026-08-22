@@ -27,6 +27,8 @@ namespace LevelEditor
             var triggerOnAnimator = childGameObject.GetComponent<TriggerOnAnimator>();
             triggerOnAnimator.m_triggerToFire = switchStub.triggerOnAnimator;
             triggerOnAnimator.m_targetAnimator = switchStub.animatorToTrigger;
+            triggerOnAnimator.m_triggerToFireHash = string.IsNullOrEmpty(triggerOnAnimator.m_triggerToFire) ? 
+                0 : Animator.StringToHash(triggerOnAnimator.m_triggerToFire);
 
             if (switchStub.objectToTrigger != null & switchStub.objectToTrigger.Length > 0)
             {
