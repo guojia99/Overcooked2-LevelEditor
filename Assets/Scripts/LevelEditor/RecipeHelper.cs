@@ -532,5 +532,73 @@ namespace LevelEditor
         {
             return array == null || array.Length == 0;
         }
+
+        public static GameObject GetIngredientPrefabForOptional(PseudoPrefabSO itemPrefabSO)
+        {
+            GameObject originalPrefab = PseudoPrefabManager.LoadAsset(itemPrefabSO);
+            var optionalRecipeMatchListItems = PseudoPrefabManager.Instance.stub.levelInfo.optionalRecipeMatchListItems;
+            if (optionalRecipeMatchListItems == null) return originalPrefab;
+            foreach (var optionalRecipe in optionalRecipeMatchListItems)
+            {
+                if (optionalRecipe is CustomRecipeOptionalBurgerSO)
+                {
+                    var optionalBurger = (CustomRecipeOptionalBurgerSO)optionalRecipe;
+                    if (optionalBurger.bunSO != itemPrefabSO) continue;
+                    GameObject bunPrefab = RuntimePrefabManager.CloneAsInactivePrefab(originalPrefab);
+                    bunPrefab.GetComponent<IngredientContainer>().m_capacity = optionalBurger.ingredientContainerCapacity;
+                    PreparationContainer container = bunPrefab.GetComponent<PreparationContainer>();
+                    OrderToPrefabLookup oldLookup = container.m_containerRestrictions;
+                    OrderToPrefabLookup lookup = GetOrderToPrefabLookupBurger(optionalBurger, oldLookup);
+                    container.m_containerRestrictions = lookup;
+                    GameObject cosmeticsPrefabAsset = container.m_cosmeticsPrefab;
+                    GameObject cosmeticsPrefab = RuntimePrefabManager.CloneAsInactivePrefab(cosmeticsPrefabAsset);
+                    BurgerBunCosmeticDecisions burgerBunCosmetic = cosmeticsPrefab.GetComponent<BurgerBunCosmeticDecisions>();
+                    BurritoCosmeticDecisions burritoCosmetic = cosmeticsPrefab.GetComponent<BurritoCosmeticDecisions>();
+                    if (burgerBunCosmetic != null)
+                    {
+                        typeof(BurgerBunCosmeticDecisions)
+                            .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                            .SetValue(burgerBunCosmetic, lookup);
+                    }
+                    else if (burritoCosmetic != null)
+                    {
+                        typeof(OverlapModelsMealDecisions)
+                            .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                            .SetValue(burritoCosmetic, lookup);
+                    }
+                    container.m_cosmeticsPrefab = cosmeticsPrefab;
+                    return bunPrefab;
+                }
+                else if (optionalRecipe is CustomRecipeOptionalPizzaSO)
+                {
+                    var optionalPizza = (CustomRecipeOptionalPizzaSO)optionalRecipe;
+                    if (optionalPizza.doughSO != itemPrefabSO) continue;
+                    GameObject prefabAssetNext = originalPrefab.GetComponent<WorkableItem>().m_nextPrefab;
+                    GameObject doughPrefab = RuntimePrefabManager.CloneAsInactivePrefab(originalPrefab);
+                    GameObject doughPrefabNext = RuntimePrefabManager.CloneAsInactivePrefab(prefabAssetNext);
+
+                    doughPrefabNext.GetComponent<IngredientContainer>().m_capacity = optionalPizza.ingredientContainerCapacity;
+                    CookablePreparationContainer container = doughPrefabNext.GetComponent<CookablePreparationContainer>();
+                    PizzaCosmeticDecisions pizzaCosmeticDecisions = container.m_cosmeticsPrefab.GetComponent<PizzaCosmeticDecisions>();
+                    OrderToPrefabLookup uncookedLookup = GetOrderToPrefabLookupPizza(optionalPizza, false, pizzaCosmeticDecisions);
+                    OrderToPrefabLookup cookedLookup = GetOrderToPrefabLookupPizza(optionalPizza, true, pizzaCosmeticDecisions);
+                    container.m_containerRestrictions = uncookedLookup;
+                    GameObject cosmeticsPrefabAsset = container.m_cosmeticsPrefab;
+                    GameObject cosmeticsPrefab = RuntimePrefabManager.CloneAsInactivePrefab(cosmeticsPrefabAsset);
+                    PizzaCosmeticDecisions pizzaCosmetic = cosmeticsPrefab.GetComponent<PizzaCosmeticDecisions>();
+                    pizzaCosmetic.GetType()
+                        .GetField("m_uncookedPrefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                        .SetValue(pizzaCosmetic, uncookedLookup);
+                    pizzaCosmetic.GetType()
+                        .GetField("m_cookedPrefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                        .SetValue(pizzaCosmetic, cookedLookup);
+                    container.m_cosmeticsPrefab = cosmeticsPrefab;
+
+                    doughPrefab.GetComponent<WorkableItem>().m_nextPrefab = doughPrefabNext;
+                    return doughPrefab;
+                }
+            }
+            return originalPrefab;
+        }
     }
 }

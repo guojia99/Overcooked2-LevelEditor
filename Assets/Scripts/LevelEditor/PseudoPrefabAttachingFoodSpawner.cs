@@ -25,7 +25,7 @@ namespace LevelEditor
             {
                 TriggerAttachedSpawn.WeightedPrefab weightedPrefab = new TriggerAttachedSpawn.WeightedPrefab
                 {
-                    AttachmentPrefab = PseudoPrefabManager.LoadAsset(spawnerStub.attachmentPrefabSOs[i])
+                    AttachmentPrefab = RecipeHelper.GetIngredientPrefabForOptional(spawnerStub.attachmentPrefabSOs[i])
                 };
                 weightedPrefab.GetType()
                     .GetField("m_weight", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
