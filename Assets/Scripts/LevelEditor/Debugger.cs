@@ -32,6 +32,7 @@ namespace LevelEditor
                 defaultKeyboardBindings.m_CombinedKeyboard.m_ButtonBindings[ControlPadInput.Button.B] = new List<Key> { debugKeyDash };
                 defaultKeyboardBindings.m_CombinedKeyboard.m_ButtonBindings[ControlPadInput.Button.Y] = new List<Key> { debugKeyEmote };
                 defaultKeyboardBindings.m_CombinedKeyboard.m_ButtonBindings[ControlPadInput.Button.LB] = new List<Key> { debugKeyShift };
+                defaultKeyboardBindings.m_CombinedKeyboard.m_ButtonBindings[ControlPadInput.Button.RB] = new List<Key> { debugKeyShift };
                 PCPadInputProvider.RestoreDefaultBindings();
             }
 
