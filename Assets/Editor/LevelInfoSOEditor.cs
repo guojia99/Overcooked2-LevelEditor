@@ -103,6 +103,19 @@ public class LevelInfoSOEditor : Editor
                 allIngredients.Add(dispenserStub.spawnerItemPrefabSO);
             }
         }
+        foreach (PseudoPrefabAttachingFoodSpawnerStub pseudoPrefabAttachingFoodSpawnerStub in FindObjectsOfType<PseudoPrefabAttachingFoodSpawnerStub>())
+        {
+            foreach (PseudoPrefabSO spawnerItemPrefabSO in pseudoPrefabAttachingFoodSpawnerStub.attachmentPrefabSOs)
+            {
+                OrderDefinitionNode orderDefinitionNode = RecipeHelper.GetIngredientOrItemOrderNode(spawnerItemPrefabSO);
+                if (!allOrderDefinitionNodes.Any(x => x.Equals(orderDefinitionNode)))
+                {
+                    allOrderDefinitionNodes.Add(orderDefinitionNode);
+                    allIngredients.Add(spawnerItemPrefabSO);
+                }
+            }
+        }
+
         levelInfo.allIngredients = allIngredients.ToArray();
     }
 
