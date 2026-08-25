@@ -231,10 +231,9 @@ namespace LevelEditor
                 pseudoPrefab.ResetChild();
             foreach (var pseudoPrefab in pseudoPrefabs)
                 pseudoPrefab.LateSetup();
-
-            PseudoParticleSystem[] pseudoParticleSystems = GameObject.FindObjectsOfType<PseudoParticleSystem>();
-            foreach (var pseudoParticleSystem in pseudoParticleSystems)
-                pseudoParticleSystem.Setup();
+            SetupCustomPrefab[] setupCustomPrefabs = GameObject.FindObjectsOfType<SetupCustomPrefab>();
+            foreach (var setupCustomPrefab in setupCustomPrefabs)
+                setupCustomPrefab.Setup();
         }
 
         public static void ClearAllPseudoPrefabs()
@@ -242,9 +241,9 @@ namespace LevelEditor
             PseudoPrefab[] pseudoPrefabs = GameObject.FindObjectsOfType<PseudoPrefab>();
             foreach (var pseudoPrefab in pseudoPrefabs)
                 pseudoPrefab.ClearChild();
-            PseudoParticleSystem[] pseudoParticleSystems = GameObject.FindObjectsOfType<PseudoParticleSystem>();
-            foreach (var pseudoParticleSystem in pseudoParticleSystems)
-                pseudoParticleSystem.Clear();
+            SetupCustomPrefab[] setupCustomPrefabs = GameObject.FindObjectsOfType<SetupCustomPrefab>();
+            foreach (var setupCustomPrefab in setupCustomPrefabs)
+                setupCustomPrefab.Clear();
         }
 
         public static void SetupAfterStartSynchronisingAllPseudoPrefabs()

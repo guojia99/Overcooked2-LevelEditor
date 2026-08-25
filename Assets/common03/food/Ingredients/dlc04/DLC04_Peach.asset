@@ -9,8 +9,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cff7c13895ab9e47a5e02d4619cc3b9, type: 3}
-  m_Name: DLC04_Meat
+  m_Name: DLC04_Peach
   m_EditorClassIdentifier: 
-  prefabName: dlc04_meat
+  prefabName: peach
   bundleName: bundle226
-  assetPath: Assets/downloadablecontent/dlc04/dlc_assets/prefabs/ingredients/dlc04_meat.prefab
+  assetPath: Assets/downloadablecontent/dlc04/dlc_assets/prefabs/ingredients/peach.prefab

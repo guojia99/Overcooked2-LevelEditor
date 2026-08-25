@@ -557,6 +557,73 @@ namespace LevelEditor
                         break;
                     }
 
+                case "utensil_big_ol_spoon":
+                    {
+                        childGameObject.GetComponent<IngredientContainer>().m_capacity = 32;
+                        break;
+                    }
+
+                case "p_dlc4_stonebase":
+                    {
+                        PseudoPrefabSO matSO = ScriptableObject.CreateInstance<PseudoPrefabSO>();
+                        matSO.prefabName = "mat_dlc4_mud_03";
+                        matSO.bundleName = "bundle225";
+                        matSO.assetPath = "Assets\\downloadablecontent\\dlc04\\dlc_assets\\models\\dressingassets\\materials\\mat_dlc4_mud_03.mat".Replace("\\", "/");
+                        Material mat1 = PseudoPrefabManager.LoadAsset<Material>(matSO);
+                        childGameObject.GetComponent<Renderer>().sharedMaterial = mat1;
+                        DestroyImmediate(matSO);
+                        break;
+                    }
+
+                case "p_dlc4_floortile_01":
+                case "p_dlc4_mud_01":
+                case "p_dlc4_grass_01":
+                    {
+                        Renderer renderer = childGameObject.GetComponent<Renderer>();
+                        if (!PseudoPrefabManager.Instance.editedMaterials.ContainsKey(renderer.sharedMaterial.name))
+                        {
+                            Material material = new Material(renderer.sharedMaterial);
+                            material.SetTextureScale("_Albedo", Vector2.one);
+                            material.SetTextureScale("_Normal", Vector2.one);
+                            material.SetTextureScale("_RMEA", Vector2.one);
+                            PseudoPrefabManager.Instance.editedMaterials.Add(renderer.sharedMaterial.name, material);
+                        }
+                        renderer.sharedMaterial = PseudoPrefabManager.Instance.editedMaterials[renderer.sharedMaterial.name];
+                        break;
+                    }
+
+                case "p_dlc4_water_01":
+                    {
+                        Renderer renderer = childGameObject.GetComponent<Renderer>();
+                        if (!PseudoPrefabManager.Instance.editedMaterials.ContainsKey(renderer.sharedMaterial.name))
+                        {
+                            Material material = new Material(renderer.sharedMaterial);
+                            material.SetTextureScale("_Diffuse_Map", 0.2f * Vector2.one);
+                            material.SetTextureScale("_NormalMap1", Vector2.one);
+                            material.SetTextureScale("_NormalMap2", Vector2.one);
+                            material.SetTextureOffset("_NormalMap2", Vector2.zero);
+                            PseudoPrefabManager.Instance.editedMaterials.Add(renderer.sharedMaterial.name, material);
+                        }
+                        renderer.sharedMaterial = PseudoPrefabManager.Instance.editedMaterials[renderer.sharedMaterial.name];
+                        break;
+                    }
+
+                case "p_dlc4_crazypaving_01":
+                    {
+                        Renderer renderer = childGameObject.GetComponent<Renderer>();
+                        renderer.sharedMaterials = new Material[] { renderer.sharedMaterials[1] };
+                        if (!PseudoPrefabManager.Instance.editedMaterials.ContainsKey(renderer.sharedMaterial.name))
+                        {
+                            Material material = new Material(renderer.sharedMaterial);
+                            material.SetTextureScale("_Albedo", Vector2.one);
+                            material.SetTextureScale("_Normal", Vector2.one);
+                            material.SetTextureScale("_RMEA", Vector2.one);
+                            PseudoPrefabManager.Instance.editedMaterials.Add(renderer.sharedMaterial.name, material);
+                        }
+                        renderer.sharedMaterial = PseudoPrefabManager.Instance.editedMaterials[renderer.sharedMaterial.name];
+                        break;
+                    }
+
                 default:
                     break;
             }
