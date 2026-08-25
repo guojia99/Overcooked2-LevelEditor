@@ -86,6 +86,9 @@ public static class LayoutRuntimeHotPot
             {
                 if (region == null || !region.enabled || region.m_TriggerArea == null)
                     continue;
+                var timedSnap = region.GetComponentInParent<LayoutRuntimeTimedCookingSwitch>();
+                if (timedSnap != null && !timedSnap.IsHeatingPhase())
+                    continue;
                 var b = region.m_TriggerArea.bounds;
                 if (center.x < b.min.x || center.x > b.max.x || center.z < b.min.z || center.z > b.max.z)
                     continue;
@@ -184,6 +187,9 @@ public static class LayoutRuntimeHotPot
         foreach (var region in Object.FindObjectsOfType<CookingRegion>())
         {
             if (region == null || !region.enabled || region.m_TriggerArea == null)
+                continue;
+            var timed = region.GetComponentInParent<LayoutRuntimeTimedCookingSwitch>();
+            if (timed != null && !timed.IsHeatingPhase())
                 continue;
             var b = region.m_TriggerArea.bounds;
             if (center.x >= b.min.x && center.x <= b.max.x && center.z >= b.min.z && center.z <= b.max.z)
