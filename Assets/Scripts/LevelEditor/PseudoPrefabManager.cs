@@ -164,7 +164,9 @@ namespace LevelEditor
                 .SetValue(component, stub.levelInfo.maxOrderCount);
 
             component = stub.AudioManagerGO.GetComponent<CampaignAudioManager>();
-            AudioClip music = stub.levelInfo.inLevelMusicSO == null ? null : LoadAsset<AudioClip>(stub.levelInfo.inLevelMusicSO);
+            AudioClip music = 
+                stub.levelInfo.inLevelMusic != null ? stub.levelInfo.inLevelMusic :
+                stub.levelInfo.inLevelMusicSO != null ? LoadAsset<AudioClip>(stub.levelInfo.inLevelMusicSO) : null;
             component.GetType()
                 .GetField("m_inLevelMusic", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                 .SetValue(component, music);
