@@ -10,6 +10,7 @@ public class Plate : MonoBehaviour
 	[SerializeField]
 	public PlatingStepData m_platingStep;
 
+	// patch
 	private void Awake()
 	{
 		IngredientContainer ingredientContainer = GetComponent<IngredientContainer>();
@@ -17,9 +18,17 @@ public class Plate : MonoBehaviour
 		{
 			ingredientContainer.m_capacity = 100;
 		}
+		// glass
+		if (m_platingStep.name == "Glass" && m_platingStep.m_uID == 1740450)
+		{
+			BoxCollider collider = GetComponent<BoxCollider>();
+			collider.center = new Vector3(0f, 0.36f, 0f);
+			collider.size = new Vector3(0.5f, 0.73f, 0.5f);
+		}
 	}
+    // patch
 
-	public bool CanPlaceOnPlate(GameObject _gameObject, IIngredientContents _ingredientContentsAdapter)
+    public bool CanPlaceOnPlate(GameObject _gameObject, IIngredientContents _ingredientContentsAdapter)
 	{
 		IContainerTransferBehaviour containerTransferBehaviour = _gameObject.RequestInterface<IContainerTransferBehaviour>();
 		if (containerTransferBehaviour == null)
