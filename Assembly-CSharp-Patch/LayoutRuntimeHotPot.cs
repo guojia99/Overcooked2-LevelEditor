@@ -29,23 +29,33 @@ public static class LayoutRuntimeHotPot
     private static readonly HashSet<ContentsCosmeticDecisions> s_soupFixed =
         new HashSet<ContentsCosmeticDecisions>();
 
+    private static HotPotTicker s_ticker;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Boot()
     {
+        if (s_ticker != null)
+            return;
         var go = new GameObject("LayoutRuntimeHotPot");
         Object.DontDestroyOnLoad(go);
-        go.AddComponent<HotPotTicker>();
+        s_ticker = go.AddComponent<HotPotTicker>();
     }
 
     private class HotPotTicker : MonoBehaviour
     {
         private void Update()
         {
-            // 烹饪进度需要逐帧累积
-            LayoutRuntimeHotPot.CookPotsOverBurner(Time.deltaTime);
-            if (Time.frameCount % 10 != 0) // 其余修复 6Hz 足够，省开销
-                return;
-            LayoutRuntimeHotPot.Tick();
+            try
+            {
+                LayoutRuntimeHotPot.CookPotsOverBurner(Time.deltaTime);
+                if (Time.frameCount % 10 != 0)
+                    return;
+                LayoutRuntimeHotPot.Tick();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning("[LayoutRuntimeHotPot] tick skipped: " + ex.Message);
+            }
         }
     }
 
@@ -116,11 +126,11 @@ public static class LayoutRuntimeHotPot
                 continue;
             if (handler.IsBurning() || handler.IsCooked())
                 continue;
-            // 锅内无内容物不加热（与宿主 ServerCookingRegion 行为一致）
-            var iorder = handler.gameObject.RequestInterface<IOrderDefinition>();
-            var comp = iorder != null ? iorder.GetOrderComposition() : null;
-            var simple = comp != null ? comp.Simpilfy() : null;
-            if (simple == null || simple == AssembledDefinitionNode.NullNode)
+            // 锅内无内容物不加热（与宿主 ServerCookingRegion 行为一致）。
+            // 不用 GetOrderComposition：锅/可移动火锅刚实例化时 ServerCookableContainer
+            // 尚未 StartSynchronising，会 NRE。
+            var itemContainer = handler.GetComponent<ServerIngredientContainer>();
+            if (itemContainer == null || !itemContainer.HasContents())
                 continue;
             handler.Cook(deltaTime);
         }

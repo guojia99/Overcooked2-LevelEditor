@@ -135,6 +135,10 @@ namespace LevelEditor
                 //  CookableContainer.m_approvedContentsList（仿宿主 CookingUtensil.Setup）。
                 ApplyAllowedIngredients(pot);
             }
+
+            // 空洞/水面坠落检测：LayoutRuntimePushableVoidFall 只扫描此 marker。
+            if (childGameObject.GetComponent<LayoutPushableVoidFallTarget>() == null)
+                childGameObject.AddComponent<LayoutPushableVoidFallTarget>();
         }
     }
 }

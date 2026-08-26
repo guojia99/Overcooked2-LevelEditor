@@ -1,7 +1,8 @@
 using LevelEditor;
 using UnityEngine;
 
-/// 世界地图装饰强制展开，烘焙到 map_* 装饰伪根上，随场景保存，编辑器与游戏包内都生效）。
+/// 世界地图装饰强制展开（游戏编译，写回时由 LayoutEditorStubIO.BakeWorldMapDressing
+/// 烘焙到 map_* 装饰伪根上，随场景保存，编辑器与游戏包内都生效）。
 ///
 /// 背景：dlc08 map_* 装饰（bundle 内 dressing assets/map/ 家族，如
 /// p_dlc08_map_rope_fence_* 绳栏）的 prefab 带 WorldMapSceneryOptimizer：
@@ -34,7 +35,7 @@ public class LayoutRuntimeWorldMapDressing : MonoBehaviour
         m_done = true;
 
         var optimizers = child.GetComponentsInChildren<WorldMapSceneryOptimizer>(true);
-        if (optimizers == null)
+        if (optimizers == null || optimizers.Length == 0)
             return;
         for (int i = 0; i < optimizers.Length; i++)
         {
@@ -44,6 +45,20 @@ public class LayoutRuntimeWorldMapDressing : MonoBehaviour
             var mesh = opt.Mesh;
             if (mesh != null && !mesh.activeSelf)
                 opt.End(FlipDirection.Unfold);
+        }
+
+        // Mesh 激活后，bundle 内自带的 BoxCollider 会一并生效（如 map_rope_fence
+        // 腰高碰撞盒，展开前因 Mesh 未激活而不存在）——在关卡里形成看不见的空气墙。
+        // 地图装饰在世界地图上 m_startCollidable=0（收起态不碰撞），关卡内的阻挡
+        // 一律由场景显式空气墙承担，这里把 child 下所有碰撞体关掉。
+        var colliders = child.GetComponentsInChildren<Collider>(true);
+        if (colliders != null)
+        {
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i] != null)
+                    colliders[i].enabled = false;
+            }
         }
     }
 }
