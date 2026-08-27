@@ -30,7 +30,7 @@ namespace LevelEditor
             triggerOnAnimator.m_triggerToFireHash = string.IsNullOrEmpty(triggerOnAnimator.m_triggerToFire) ? 
                 0 : Animator.StringToHash(triggerOnAnimator.m_triggerToFire);
 
-            if (switchStub.objectToTrigger != null & switchStub.objectToTrigger.Length > 0)
+            if (switchStub.objectToTrigger != null && switchStub.objectToTrigger.Length > 0)
             {
                 var triggerOnObject = childGameObject.AddComponent<TriggerOnObject>();
                 triggerOnObject.m_trigger = "Switch";

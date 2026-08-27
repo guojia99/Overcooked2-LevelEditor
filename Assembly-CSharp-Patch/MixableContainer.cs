@@ -120,6 +120,13 @@ public class MixableContainer : MonoBehaviour
         if (orderDefinition == null)
             return false;
 
+        // glass to blender -> false
+        if (_object.GetComponent<Plate>() != null &&
+            gameObject.GetComponent<BlenderCosmeticDecisions>() != null)
+        {
+            return false;
+        }
+        
         AssembledDefinitionNode assembledDefinitionNode = orderDefinition.GetOrderComposition();
         if (_object.RequestComponent<MixableContainer>() != null)
         {
@@ -138,6 +145,11 @@ public class MixableContainer : MonoBehaviour
                     return false;
             }
         }
+        // can't throw ingredients into a mixbowl in an oven
+        else if (
+            transform.parent.GetComponentInParent<OvenCosmeticDecisions>() != null || 
+            transform.parent.GetComponentInParent<FurnaceOvenCosmeticDecisions>() != null)
+            return false;
 
         if (assembledDefinitionNode is CookedCompositeAssembledNode)
         {

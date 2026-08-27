@@ -51,7 +51,9 @@ namespace LevelEditor
                     childGameObject.GetComponent<PlateStation>() != null ||
                     childGameObject.GetComponentInChildren<WashingStation>() != null ||
                     childGameObject.GetComponent<TriggerZone>() != null ||
-                    childGameObject.GetComponent<PhysicalAttachment>() != null)
+                    childGameObject.GetComponent<PhysicalAttachment>() != null ||
+                    childGameObject.GetComponent<FurnaceCosmeticDecisions>() != null ||
+                    childGameObject.GetComponent<AutoWorkstation>() != null)
                 {
                     editorGridSnap.enabled = false;
                 }
@@ -522,9 +524,7 @@ namespace LevelEditor
 
                 case "dlc03_stall":
                     {
-                        Light[] lights = childGameObject.RequestComponentsRecursive<Light>();
-                        foreach (Light light in lights)
-                            light.enabled = false;
+                        HandleSpecificPrefabs_DisableLights();
                         HandleSpecificPrefabs_Snow();
                         break;
                     }
@@ -624,8 +624,40 @@ namespace LevelEditor
                         break;
                     }
 
+                case "utensil_coalbucket_01":
+                    {
+                        ItemContainer itemContainer = childGameObject.GetComponent<ItemContainer>();
+                        itemContainer.m_approvedContentsList = (OrderToPrefabLookup)typeof(OverlapModelsMealDecisions)
+                            .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.NonPublic)
+                            .GetValue(itemContainer.m_cosmeticsPrefab.GetComponent<CoalBucketCosmeticDecisions>());
+                        break;
+                    }
+
+                case "p_dlc07_sconce_01":
+                case "p_dlc07_courtyard_candelabra_01":
+                    {
+                        HandleSpecificPrefabs_DisableLights();
+                        break;
+                    }
+
+                case "p_dlc07_traffic_light_01":
+                case "m_dlc07_drawbridge":
+                    {
+                        if (GetComponent<Animator>() != null)
+                            GetComponent<Animator>().Rebind();
+                        break;
+                    }
+
                 default:
                     break;
+            }
+        }
+
+        private void HandleSpecificPrefabs_DisableLights()
+        {
+            foreach (Light light in childGameObject.RequestComponentsRecursive<Light>())
+            {
+                light.gameObject.SetActive(false);
             }
         }
 

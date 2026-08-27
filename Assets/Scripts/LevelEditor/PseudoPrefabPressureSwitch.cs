@@ -19,7 +19,7 @@ namespace LevelEditor
             var triggerOnObject = childGameObject.GetComponents<TriggerOnObject>();
             triggerOnObject[0].m_triggerToFire = switchStub.triggerOnObjectEnter;
             triggerOnObject[1].m_triggerToFire = switchStub.triggerOnObjectExit;
-            if (switchStub.objectToTrigger != null & switchStub.objectToTrigger.Length > 0)
+            if (switchStub.objectToTrigger != null && switchStub.objectToTrigger.Length > 0)
             {
                 if (switchStub.objectToTrigger.Length == 1)
                 {

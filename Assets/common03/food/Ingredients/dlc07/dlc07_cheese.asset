@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cff7c13895ab9e47a5e02d4619cc3b9, type: 3}
-  m_Name: dlc07_cheese
+  m_Name: DLC07_Cheese
   m_EditorClassIdentifier: 
   prefabName: dlc07_cheese
   bundleName: bundle297

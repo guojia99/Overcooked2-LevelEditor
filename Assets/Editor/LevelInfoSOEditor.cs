@@ -115,6 +115,19 @@ public class LevelInfoSOEditor : Editor
                 }
             }
         }
+        foreach (SpecificPseudoPrefabTag specificPseudoPrefabTag in FindObjectsOfType<SpecificPseudoPrefabTag>())
+        {
+            if (specificPseudoPrefabTag.tag == "dispenser_coal_01")
+            {
+                PseudoPrefabSO coalSO = specificPseudoPrefabTag.GetComponent<PseudoPrefabSOArray>().pseudoPrefabSOs[0];
+                OrderDefinitionNode orderDefinitionNode = RecipeHelper.GetIngredientOrItemOrderNode(coalSO);
+                if (!allOrderDefinitionNodes.Any(x => x.Equals(orderDefinitionNode)))
+                {
+                    allOrderDefinitionNodes.Add(orderDefinitionNode);
+                    allIngredients.Add(coalSO);
+                }
+            }
+        }
 
         levelInfo.allIngredients = allIngredients.ToArray();
     }

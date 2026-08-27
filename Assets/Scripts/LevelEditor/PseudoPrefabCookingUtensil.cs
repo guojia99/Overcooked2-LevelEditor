@@ -179,6 +179,12 @@ namespace LevelEditor
                             typeof(OverlapModelsMealDecisions)
                                 .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.NonPublic)
                                 .SetValue(cosmeticsPrefab.GetComponent<OverlapModelsMealDecisions>(), newLookup);
+                            if (cosmeticsPrefab.GetComponent<RoastingTrayCosmeticDecisions>() != null)
+                            {
+                                typeof(RoastingTrayCosmeticDecisions)
+                                    .GetField("m_repositionLookup", BindingFlags.Instance | BindingFlags.NonPublic)
+                                    .SetValue(cosmeticsPrefab.GetComponent<RoastingTrayCosmeticDecisions>(), newLookup);
+                            }
                             cookableContainer.m_cosmeticsPrefab = cosmeticsPrefab;
                         }
                         else if (cookableContainer.m_cosmeticsPrefab.GetComponent<SkewerCosmeticDecisions>() != null)

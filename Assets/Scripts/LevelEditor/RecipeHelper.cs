@@ -536,6 +536,16 @@ namespace LevelEditor
         public static GameObject GetIngredientPrefabForOptional(PseudoPrefabSO itemPrefabSO)
         {
             GameObject originalPrefab = PseudoPrefabManager.LoadAsset(itemPrefabSO);
+
+            // fix: coal can be thrown into the furnace
+            if (originalPrefab.GetComponent<ItemPropertiesComponent>() != null && 
+                originalPrefab.GetComponent<ItemHeatTransferBehaviour>() == null)
+            {
+                GameObject coal = RuntimePrefabManager.CloneAsInactivePrefab(originalPrefab);
+                coal.AddComponent<ItemHeatTransferBehaviour>();
+                return coal;
+            }
+
             var optionalRecipeMatchListItems = PseudoPrefabManager.Instance.stub.levelInfo.optionalRecipeMatchListItems;
             if (optionalRecipeMatchListItems == null) return originalPrefab;
             foreach (var optionalRecipe in optionalRecipeMatchListItems)
