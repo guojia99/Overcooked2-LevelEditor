@@ -8,7 +8,7 @@
 
 3. 反编译游戏代码放入 `Assets/Scripts` 中：
 
-  > 1. 下载 Assetripper 反编译工具 https://github.com/assetripper/assetripper。
+  > 1. 下载 Assetripper 反编译工具（版本<=1.3.14）[Release 1.3.14 · AssetRipper/AssetRipper](https://github.com/AssetRipper/AssetRipper/releases/tag/1.3.14)。
   > 2. 打开 Assetripper，File - Settings - 勾选 Skip StreamingAssets Folder - 最下面 Save。
   > 3. File - Open Folder - 选择游戏目录中 `Overcooked! 2/Overcooked2_Data` 文件夹。
   > 4. Export - Export All Files - 勾选 Create Subfolder - Select Folder 选择你的导出目录 - Export Unity Project，等待导出完成。

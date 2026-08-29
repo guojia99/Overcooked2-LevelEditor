@@ -8,7 +8,7 @@
 
 3. Decompile the game code and place it into `Assets/Scripts`:
 
-  > 1. Download AssetRipper from https://github.com/assetripper/assetripper.
+  > 1. Download AssetRipper (<=1.3.14) from [Release 1.3.14 · AssetRipper/AssetRipper](https://github.com/AssetRipper/AssetRipper/releases/tag/1.3.14).
   > 2. Open AssetRipper, File - Settings - check Skip StreamingAssets Folder - click Save at the bottom.
   > 3. File - Open Folder - select the `Overcooked! 2/Overcooked2_Data` folder from the game directory.
   > 4. Export - Export All Files - check Create Subfolder - Select Folder - choose your export directory - Export Unity Project. Wait for the export to complete.
