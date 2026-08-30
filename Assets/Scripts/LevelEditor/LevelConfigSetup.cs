@@ -68,8 +68,13 @@ namespace LevelEditor
 
                 if (!config.optionalRecipeMatchListItems.IsEmpty())
                 {
-                    optionalRecipeMatchListItems = config.optionalRecipeMatchListItems.Select(x => RecipeHelper.GetOrderDefinitionNodeCustomRecipeOptional(x)).ToList();
-                    newRecipeMatchListItems.AddRange(optionalRecipeMatchListItems);
+                    foreach (var optionalRecipeMatchListItem in config.optionalRecipeMatchListItems)
+                    {
+                        OrderDefinitionNode orderDefinitionNode = RecipeHelper.GetOrderDefinitionNodeCustomRecipeOptional(optionalRecipeMatchListItem);
+                        optionalRecipeMatchListItems.Add(orderDefinitionNode);
+                        if (!recipes.Any(x => x == optionalRecipeMatchListItem))
+                            newRecipeMatchListItems.Add(orderDefinitionNode);
+                    }
                 }
 
                 newRecipeMatchListItems.AddRange(recipeList.m_recipes.Select(x => x.m_order));
