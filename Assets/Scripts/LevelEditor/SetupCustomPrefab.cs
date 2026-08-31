@@ -8,7 +8,8 @@ namespace LevelEditor
 {
     [ExecuteInEditMode]
     [DefaultExecutionOrder(-99)]
-    public class SetupCustomPrefab : MonoBehaviour
+    [SelectionBase]
+    public abstract class SetupCustomPrefab : MonoBehaviour
     {
         protected SetupCustomPrefabStub stub;
 
@@ -28,8 +29,13 @@ namespace LevelEditor
             stub = GetComponent<SetupCustomPrefabStub>();
         }
 
+        public virtual void LateSetup()
+        {
+        }
+
         public virtual void Clear()
         {
+            stub = GetComponent<SetupCustomPrefabStub>();
         }
     }
 }

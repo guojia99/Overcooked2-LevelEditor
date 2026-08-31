@@ -35,7 +35,7 @@ namespace LevelEditor
 
             GameObject prefab = PseudoPrefabManager.LoadAsset(stub.pseudoPrefabSO);
             // ResetChild may be called again in LoadAsset(), instantiating a child object
-            // thus ClearChild() here, otherwise two child objects are instantiated
+            // thus ClearChild() here (not above), otherwise two child objects are instantiated
             ClearChild();
             childGameObject = Instantiate(prefab, transform.position, transform.rotation, transform);
             childGameObject.name = stub.pseudoPrefabSO.prefabName;
@@ -635,6 +635,8 @@ namespace LevelEditor
 
                 case "p_dlc07_sconce_01":
                 case "p_dlc07_courtyard_candelabra_01":
+                case "p_dlc08_wagon":
+                case "p_dlc08_sconce_01":
                     {
                         HandleSpecificPrefabs_DisableLights();
                         break;
@@ -645,6 +647,38 @@ namespace LevelEditor
                     {
                         if (GetComponent<Animator>() != null)
                             GetComponent<Animator>().Rebind();
+                        break;
+                    }
+
+                case "dlc08_workstation_mixer":
+                    {
+                        if (childGameObject.GetComponent<EditorGridSnap>() != null)
+                            childGameObject.GetComponent<EditorGridSnap>().enabled = false;
+                        childGameObject.transform.Find("m_cakemixer_Body_01/Mesh/m_dlc7_city_countertop_01").gameObject.SetActive(false);
+                        break;
+                    }
+
+                case "dlc08_condiment_dispenser":
+                case "dlc08_drink_machine":
+                    {
+                        foreach (var componet in gameObject.GetComponents<TriggerOnObject>())
+                        {
+                            componet.m_targetObject = childGameObject;
+                        }
+                        break;
+                    }
+
+                case "p_dlc08_string_lights_01":
+                    {
+                        PseudoPrefabSO matSO = ScriptableObject.CreateInstance<PseudoPrefabSO>();
+                        matSO.prefabName = "mat_dlc08_dressingassets_03";
+                        matSO.bundleName = "bundle355";
+                        matSO.assetPath = "Assets\\downloadablecontent\\dlc08\\dlc_assets\\models\\dressing assets\\materials\\mat_dlc08_dressingassets_03.mat".Replace("\\", "/");
+                        Material mat1 = PseudoPrefabManager.LoadAsset<Material>(matSO);
+                        Renderer renderer = childGameObject.GetComponent<Renderer>();
+                        Material mat0 = renderer.sharedMaterials[0];
+                        renderer.sharedMaterials = new Material[] { mat0, mat1, mat1 };
+                        DestroyImmediate(matSO);
                         break;
                     }
 

@@ -19,6 +19,10 @@ namespace LevelEditor
             cos.m_inactiveMaterial = PseudoPrefabManager.LoadAsset<Material>(switchStub.inactiveMaterial);
             cos.m_buttonBit.sharedMaterial = cos.m_activeMaterial;
 
+            Transform transform = childGameObject.transform.Find("Switch_Base");
+            if (transform != null && transform.GetComponent<Renderer>() != null)
+                transform.GetComponent<Renderer>().sharedMaterial = cos.m_activeMaterial;
+
             foreach (var componet in gameObject.GetComponents<TriggerOnObject>())
             {
                 componet.m_targetObject = childGameObject;

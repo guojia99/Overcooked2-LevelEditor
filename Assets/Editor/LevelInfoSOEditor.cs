@@ -117,15 +117,27 @@ public class LevelInfoSOEditor : Editor
         }
         foreach (SpecificPseudoPrefabTag specificPseudoPrefabTag in FindObjectsOfType<SpecificPseudoPrefabTag>())
         {
-            if (specificPseudoPrefabTag.tag == "dispenser_coal_01")
+            switch (specificPseudoPrefabTag.prefabTag)
             {
-                PseudoPrefabSO coalSO = specificPseudoPrefabTag.GetComponent<PseudoPrefabSOArray>().pseudoPrefabSOs[0];
-                OrderDefinitionNode orderDefinitionNode = RecipeHelper.GetIngredientOrItemOrderNode(coalSO);
-                if (!allOrderDefinitionNodes.Any(x => x.Equals(orderDefinitionNode)))
-                {
-                    allOrderDefinitionNodes.Add(orderDefinitionNode);
-                    allIngredients.Add(coalSO);
-                }
+                case "dispenser_coal_01":
+                case "dlc08_condiment_dispenser":
+                    {
+                        PseudoPrefabSO[] itemSOs = specificPseudoPrefabTag.GetComponent<PseudoPrefabSOArray>().pseudoPrefabSOs;
+                        foreach (PseudoPrefabSO itemSO in itemSOs)
+                        {
+                            OrderDefinitionNode orderDefinitionNode = RecipeHelper.GetIngredientOrItemOrderNode(itemSO);
+                            if (!allOrderDefinitionNodes.Any(x => x.Equals(orderDefinitionNode)))
+                            {
+                                allOrderDefinitionNodes.Add(orderDefinitionNode);
+                                allIngredients.Add(itemSO);
+                            }
+
+                        }
+                        break;
+                    }
+
+                default:
+                    break;
             }
         }
 

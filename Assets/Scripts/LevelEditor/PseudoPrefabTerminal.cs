@@ -16,6 +16,20 @@ namespace LevelEditor
             {
                 DestroyImmediate(component);
             }
+            childGameObject.AddComponent<AnticipateInteractionHighlight>();
+
+            if (terminalStub.joystickMatSO != null)
+            {
+                Material material = PseudoPrefabManager.LoadAsset<Material>(terminalStub.joystickMatSO);
+                TerminalCosmeticDecisions terminalCosmeticDecisions = childGameObject.GetComponent<TerminalCosmeticDecisions>();
+                if (terminalCosmeticDecisions != null)
+                {
+                    terminalCosmeticDecisions.ActiveMaterial = material;
+                    terminalCosmeticDecisions.InUseMaterial = material;
+                }
+                foreach (Renderer renderer in childGameObject.RequestComponentsRecursive<Renderer>())
+                    renderer.sharedMaterial = material;
+            }
         }
     }
 }

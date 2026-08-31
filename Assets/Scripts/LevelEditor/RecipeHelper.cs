@@ -265,6 +265,7 @@ namespace LevelEditor
                 GameObject platingPrefab = RuntimePrefabManager.CloneAsInactivePrefab(platingPrefabAsset, clearOnRestart: false);
                 BurgerBunCosmeticDecisions burgerCosmetic = platingPrefab.GetComponent<BurgerBunCosmeticDecisions>();
                 BurritoCosmeticDecisions burritoCosmetic = platingPrefab.GetComponent<BurritoCosmeticDecisions>();
+                HotdogCosmeticDecisions hotdogCosmetic = platingPrefab.GetComponent<HotdogCosmeticDecisions>();
                 if (burgerCosmetic != null)
                 {
                     OrderToPrefabLookup oldLookup = (OrderToPrefabLookup)typeof(BurgerBunCosmeticDecisions)
@@ -284,6 +285,33 @@ namespace LevelEditor
                     typeof(OverlapModelsMealDecisions)
                         .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                         .SetValue(burritoCosmetic, lookup);
+                }
+                else if (hotdogCosmetic != null)
+                {
+                    BurritoCosmeticDecisions newCosmetic = platingPrefab.AddComponent<BurritoCosmeticDecisions>();
+                    OrderToPrefabLookup oldLookup = (OrderToPrefabLookup)typeof(HotdogCosmeticDecisions)
+                        .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                        .GetValue(hotdogCosmetic);
+                    OrderToPrefabLookup lookup = GetOrderToPrefabLookupBurger(optionalBurgerSO, oldLookup);
+                    typeof(OverlapModelsMealDecisions)
+                        .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                        .SetValue(newCosmetic, lookup);
+                    OrderDefinitionNode m_emptyHotdogDefinition = (OrderDefinitionNode)typeof(HotdogCosmeticDecisions)
+                        .GetField("m_emptyHotdogDefinition", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .GetValue(hotdogCosmetic);
+                    typeof(BurritoCosmeticDecisions)
+                        .GetField("m_tortillaOrderDefinition", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                        .SetValue(newCosmetic, m_emptyHotdogDefinition);
+                    GameObject m_emptyBun = (GameObject)typeof(HotdogCosmeticDecisions)
+                        .GetField("m_emptyBun", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .GetValue(hotdogCosmetic);
+                    typeof(BurritoCosmeticDecisions)
+                        .GetField("m_fullTortilla", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                        .SetValue(newCosmetic, m_emptyBun);
+                    typeof(BurritoCosmeticDecisions)
+                        .GetField("m_emptyTortilla", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                        .SetValue(newCosmetic, m_emptyBun);
+                    UnityEngine.Object.DestroyImmediate(hotdogCosmetic);
                 }
 
                 node.m_platingPrefab = platingPrefab;
@@ -410,7 +438,11 @@ namespace LevelEditor
 
         public static IngredientOrderNode GetIngredientOrderNode(PseudoPrefabSO pseudoPrefabSO)
         {
-            GameObject ingredient = PseudoPrefabManager.LoadAsset<GameObject>(pseudoPrefabSO);
+            UnityEngine.Object prefab = PseudoPrefabManager.LoadAsset<UnityEngine.Object>(pseudoPrefabSO);
+            IngredientOrderNode ingredientOrderNode = prefab as IngredientOrderNode;
+            if (ingredientOrderNode != null)
+                return ingredientOrderNode;
+            GameObject ingredient = prefab as GameObject;
             while (ingredient.GetComponent<WorkableItem>() != null)
                 ingredient = ingredient.GetComponent<WorkableItem>().m_nextPrefab;
             IngredientPropertiesComponent ingredientPropertiesComponent = ingredient.GetComponent<IngredientPropertiesComponent>();
@@ -436,7 +468,11 @@ namespace LevelEditor
 
         public static ItemOrderNode GetItemOrderNode(PseudoPrefabSO pseudoPrefabSO)
         {
-            GameObject item = PseudoPrefabManager.LoadAsset<GameObject>(pseudoPrefabSO);
+            UnityEngine.Object prefab = PseudoPrefabManager.LoadAsset<UnityEngine.Object>(pseudoPrefabSO);
+            ItemOrderNode itemOrderNode = prefab as ItemOrderNode;
+            if (itemOrderNode != null)
+                return itemOrderNode;
+            GameObject item = prefab as GameObject;
             while (item.GetComponent<WorkableItem>() != null)
                 item = item.GetComponent<WorkableItem>().m_nextPrefab;
             ItemPropertiesComponent itemPropertiesComponent = item.GetComponent<ItemPropertiesComponent>();
@@ -554,6 +590,13 @@ namespace LevelEditor
                 {
                     var optionalBurger = (CustomRecipeOptionalBurgerSO)optionalRecipe;
                     if (optionalBurger.bunSO != itemPrefabSO) continue;
+
+                    GameObject originalUnchoppedPrefab = null;
+                    if (originalPrefab.GetComponent<WorkableItem>() != null)
+                    {
+                        originalUnchoppedPrefab = originalPrefab;
+                        originalPrefab = originalPrefab.GetComponent<WorkableItem>().m_nextPrefab;
+                    }
                     GameObject bunPrefab = RuntimePrefabManager.CloneAsInactivePrefab(originalPrefab);
                     bunPrefab.GetComponent<IngredientContainer>().m_capacity = optionalBurger.ingredientContainerCapacity;
                     PreparationContainer container = bunPrefab.GetComponent<PreparationContainer>();
@@ -564,6 +607,7 @@ namespace LevelEditor
                     GameObject cosmeticsPrefab = RuntimePrefabManager.CloneAsInactivePrefab(cosmeticsPrefabAsset);
                     BurgerBunCosmeticDecisions burgerBunCosmetic = cosmeticsPrefab.GetComponent<BurgerBunCosmeticDecisions>();
                     BurritoCosmeticDecisions burritoCosmetic = cosmeticsPrefab.GetComponent<BurritoCosmeticDecisions>();
+                    HotdogCosmeticDecisions hotdogCosmetic = cosmeticsPrefab.GetComponent<HotdogCosmeticDecisions>();
                     if (burgerBunCosmetic != null)
                     {
                         typeof(BurgerBunCosmeticDecisions)
@@ -576,8 +620,40 @@ namespace LevelEditor
                             .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                             .SetValue(burritoCosmetic, lookup);
                     }
+                    else if (hotdogCosmetic != null)
+                    {
+                        BurritoCosmeticDecisions newCosmetic = cosmeticsPrefab.AddComponent<BurritoCosmeticDecisions>();
+                        typeof(OverlapModelsMealDecisions)
+                            .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                            .SetValue(newCosmetic, lookup);
+                        OrderDefinitionNode m_emptyHotdogDefinition = (OrderDefinitionNode)typeof(HotdogCosmeticDecisions)
+                            .GetField("m_emptyHotdogDefinition", BindingFlags.Instance | BindingFlags.NonPublic)
+                            .GetValue(hotdogCosmetic);
+                        typeof(BurritoCosmeticDecisions)
+                            .GetField("m_tortillaOrderDefinition", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                            .SetValue(newCosmetic, m_emptyHotdogDefinition);
+                        GameObject m_emptyBun = (GameObject)typeof(HotdogCosmeticDecisions)
+                            .GetField("m_emptyBun", BindingFlags.Instance | BindingFlags.NonPublic)
+                            .GetValue(hotdogCosmetic);
+                        typeof(BurritoCosmeticDecisions)
+                            .GetField("m_fullTortilla", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                            .SetValue(newCosmetic, m_emptyBun);
+                        typeof(BurritoCosmeticDecisions)
+                            .GetField("m_emptyTortilla", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
+                            .SetValue(newCosmetic, m_emptyBun);
+                        UnityEngine.Object.DestroyImmediate(hotdogCosmetic);
+                    }
                     container.m_cosmeticsPrefab = cosmeticsPrefab;
-                    return bunPrefab;
+                    if (originalUnchoppedPrefab == null)
+                    {
+                        return bunPrefab;
+                    }
+                    else
+                    {
+                        GameObject unchoppedPrefab = RuntimePrefabManager.CloneAsInactivePrefab(originalUnchoppedPrefab);
+                        unchoppedPrefab.GetComponent<WorkableItem>().m_nextPrefab = bunPrefab;
+                        return unchoppedPrefab;
+                    }
                 }
                 else if (optionalRecipe is CustomRecipeOptionalPizzaSO)
                 {

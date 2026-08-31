@@ -231,11 +231,14 @@ namespace LevelEditor
             PseudoPrefab[] pseudoPrefabs = GameObject.FindObjectsOfType<PseudoPrefab>();
             foreach (var pseudoPrefab in pseudoPrefabs)
                 pseudoPrefab.ResetChild();
-            foreach (var pseudoPrefab in pseudoPrefabs)
-                pseudoPrefab.LateSetup();
             SetupCustomPrefab[] setupCustomPrefabs = GameObject.FindObjectsOfType<SetupCustomPrefab>();
             foreach (var setupCustomPrefab in setupCustomPrefabs)
                 setupCustomPrefab.Setup();
+
+            foreach (var pseudoPrefab in pseudoPrefabs)
+                pseudoPrefab.LateSetup();
+            foreach (var setupCustomPrefab in setupCustomPrefabs)
+                setupCustomPrefab.LateSetup();
         }
 
         public static void ClearAllPseudoPrefabs()

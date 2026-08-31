@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
+using LevelEditorStub;
 
 
 namespace LevelEditor
@@ -11,7 +12,8 @@ namespace LevelEditor
         public override void Setup()
         {
             base.Setup();
-            GameObject prefab = PseudoPrefabManager.LoadAsset(stub.pseudoPrefabSOArray.pseudoPrefabSOs[0]);
+            SetupPushableObjectStub setupPushableObjectStub = (SetupPushableObjectStub)stub;
+            GameObject prefab = PseudoPrefabManager.LoadAsset(setupPushableObjectStub.iconPrefabSO);
             ContextualInteractHoverIcon icon = gameObject.GetComponent<ContextualInteractHoverIcon>();
             typeof(ButtonHoverIcon).GetField("m_iconPrefab", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(icon, prefab);
         }

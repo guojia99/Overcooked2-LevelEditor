@@ -7,5 +7,6 @@ namespace LevelEditorStub
 {
     public class SetupPushableObjectStub : SetupCustomPrefabStub
     {
+        [SerializeField] public PseudoPrefabSO iconPrefabSO;
     }
 }

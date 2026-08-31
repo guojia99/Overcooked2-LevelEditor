@@ -5,8 +5,7 @@ using UnityEngine;
 
 namespace LevelEditorStub
 {
-    public class SetupCustomPrefabStub : Stub
+    public abstract class SetupCustomPrefabStub : Stub
     {
-        [SerializeField] public PseudoPrefabSOArray pseudoPrefabSOArray;
     }
 }
