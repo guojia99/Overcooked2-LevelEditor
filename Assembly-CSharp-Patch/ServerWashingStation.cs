@@ -125,6 +125,11 @@ public class ServerWashingStation : ServerSynchroniserBase, IHandlePlacement, IB
                     PlatingStepData platingStepData = m_platePrefab.GetComponent<Plate>().m_platingStep;
                     if (platingStepData != null && platingStepData != dirtyPlateStack.m_plateType)
                         return;
+                    GameObject plate1 = dirtyPlateStack.m_washedPrefab.GetComponent<CleanPlateStack>().m_platePrefab;
+                    bool isTray1 = plate1 != null && plate1.GetComponent<Tray>() != null;
+                    bool isTray2 = m_platePrefab.GetComponent<Tray>() != null;
+                    if (isTray1 != isTray2)
+						return;
                 }
             }
         }
