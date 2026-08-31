@@ -320,18 +320,9 @@ namespace LevelEditor
 
                 case "p_dlc09_box_lid":
                 case "p_dlc09_wallbit_01":
+                case "p_dlc09_snow":
                     {
-                        Renderer[] renderers = childGameObject.RequestComponentsRecursive<Renderer>();
-                        foreach (Renderer renderer in renderers)
-                        {
-                            if (!PseudoPrefabManager.Instance.editedMaterials.ContainsKey(renderer.sharedMaterial.name))
-                            {
-                                Material material = new Material(renderer.sharedMaterial);
-                                material.SetColor("_SnowColour", new Color32(179, 179, 179, 255));
-                                PseudoPrefabManager.Instance.editedMaterials.Add(renderer.sharedMaterial.name, material);
-                            }
-                            renderer.sharedMaterial = PseudoPrefabManager.Instance.editedMaterials[renderer.sharedMaterial.name];
-                        }
+                        HandleSpecificPrefabs_Snow_DLC09();
                         break;
                     }
 
@@ -354,14 +345,7 @@ namespace LevelEditor
                     {
                         childGameObject.transform.Find("glow").gameObject.SetActive(false);
                         childGameObject.transform.Find("Point light").gameObject.SetActive(false);
-                        Renderer renderer = childGameObject.transform.Find(childGameObject.name.Replace("p_dlc09", "m_dlc5")).GetComponent<Renderer>();
-                        if (!PseudoPrefabManager.Instance.editedMaterials.ContainsKey(renderer.sharedMaterial.name))
-                        {
-                            Material material = new Material(renderer.sharedMaterial);
-                            material.SetColor("_SnowColour", new Color32(179, 179, 179, 255));
-                            PseudoPrefabManager.Instance.editedMaterials.Add(renderer.sharedMaterial.name, material);
-                        }
-                        renderer.sharedMaterial = PseudoPrefabManager.Instance.editedMaterials[renderer.sharedMaterial.name];
+                        HandleSpecificPrefabs_Snow_DLC09();
                         break;
                     }
 
@@ -637,6 +621,7 @@ namespace LevelEditor
                 case "p_dlc07_courtyard_candelabra_01":
                 case "p_dlc08_wagon":
                 case "p_dlc08_sconce_01":
+                case "DisableLights":
                     {
                         HandleSpecificPrefabs_DisableLights();
                         break;
@@ -682,6 +667,63 @@ namespace LevelEditor
                         break;
                     }
 
+                case "p_dlc09_battlements_wallsection":
+                    {
+                        Material mat = null;
+                        foreach (var renderer in childGameObject.RequestComponentsRecursive<Renderer>())
+                        {
+                            if (renderer.sharedMaterial.name == "mat_dlc09_battlements_bricks_01")
+                            {
+                                mat = renderer.sharedMaterial;
+                                break;
+                            }
+                        }
+                        if (mat != null)
+                        {
+                            foreach (var renderer in childGameObject.RequestComponentsRecursive<Renderer>())
+                                if (renderer.sharedMaterial.name == "mat_dlc09_battlements_bricks_02")
+                                    renderer.sharedMaterial = mat;
+                        }
+                        HandleSpecificPrefabs_Snow_DLC09();
+                        break;
+                    }
+
+                case "p_dlc09_hanging_masonjar":
+                    {
+                        HandleSpecificPrefabs_Snow_DLC09();
+                        childGameObject.transform.Find("Particle System").gameObject.SetActive(false);
+                        childGameObject.transform.Find("glow (1)").gameObject.SetActive(false);
+                        childGameObject.transform.Find("Point light").gameObject.SetActive(false);
+                        break;
+                    }
+
+                case "p_dlc09_hanging_masonjar_03":
+                case "p_dlc09_building_01":
+                case "p_dlc09_camp_fire_02":
+                case "p_dlc09_lantern_01":
+                    {
+                        HandleSpecificPrefabs_DisableLights();
+                        HandleSpecificPrefabs_Snow_DLC09();
+                        break;
+                    }
+
+                case "p_dlc09_sconce_01":
+                case "p_dlc09_wagon":
+                    {
+                        HandleSpecificPrefabs_DisableLights();
+                        HandleSpecificPrefabs_Snow_DLC09();
+                        foreach (Renderer renderer in childGameObject.RequestComponentsRecursive<MeshRenderer>())
+                            renderer.enabled = true;
+                        break;
+                    }
+
+                case "p_dlc09_snow_2":
+                    {
+                        HandleSpecificPrefabs_DisableLights();
+                        HandleSpecificPrefabs_Snow_DLC09_2();
+                        break;
+                    }
+
                 default:
                     break;
             }
@@ -719,6 +761,50 @@ namespace LevelEditor
                 }
                 Material snowMat = PseudoPrefabManager.Instance.editedMaterials[materials[snowIndex].name];
                 renderer.sharedMaterials = materials.Select((x, i) => i == snowIndex ? snowMat : x).ToArray();
+            }
+        }
+
+        private void HandleSpecificPrefabs_Snow_DLC09()
+        {
+            Renderer[] renderers = childGameObject.RequestComponentsRecursive<MeshRenderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                Material[] materials = renderer.sharedMaterials;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    Material material = materials[i];
+                    if (!material.HasProperty("_SnowColour")) continue;
+                    if (!PseudoPrefabManager.Instance.editedMaterials.ContainsKey(material.name))
+                    {
+                        Material newMaterial = new Material(material);
+                        newMaterial.SetColor("_SnowColour", new Color32(179, 179, 179, 255));
+                        PseudoPrefabManager.Instance.editedMaterials.Add(material.name, newMaterial);
+                    }
+                    materials[i] = PseudoPrefabManager.Instance.editedMaterials[material.name];
+                }
+                renderer.sharedMaterials = materials;
+            }
+        }
+
+        private void HandleSpecificPrefabs_Snow_DLC09_2()
+        {
+            Renderer[] renderers = childGameObject.RequestComponentsRecursive<MeshRenderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                Material[] materials = renderer.sharedMaterials;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    Material material = materials[i];
+                    if (!material.name.StartsWith("mat_dlc9_snow_") || !material.HasProperty("_Colour")) continue;
+                    if (!PseudoPrefabManager.Instance.editedMaterials.ContainsKey(material.name))
+                    {
+                        Material newMaterial = new Material(material);
+                        newMaterial.SetColor("_Colour", new Color32(169, 169, 169, 255));
+                        PseudoPrefabManager.Instance.editedMaterials.Add(material.name, newMaterial);
+                    }
+                    materials[i] = PseudoPrefabManager.Instance.editedMaterials[material.name];
+                }
+                renderer.sharedMaterials = materials;
             }
         }
 
