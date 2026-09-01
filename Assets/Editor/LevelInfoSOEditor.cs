@@ -103,6 +103,44 @@ public class LevelInfoSOEditor : Editor
                 allIngredients.Add(dispenserStub.spawnerItemPrefabSO);
             }
         }
+        foreach (PseudoPrefabAttachingFoodSpawnerStub pseudoPrefabAttachingFoodSpawnerStub in FindObjectsOfType<PseudoPrefabAttachingFoodSpawnerStub>())
+        {
+            foreach (PseudoPrefabSO spawnerItemPrefabSO in pseudoPrefabAttachingFoodSpawnerStub.attachmentPrefabSOs)
+            {
+                OrderDefinitionNode orderDefinitionNode = RecipeHelper.GetIngredientOrItemOrderNode(spawnerItemPrefabSO);
+                if (!allOrderDefinitionNodes.Any(x => x.Equals(orderDefinitionNode)))
+                {
+                    allOrderDefinitionNodes.Add(orderDefinitionNode);
+                    allIngredients.Add(spawnerItemPrefabSO);
+                }
+            }
+        }
+        foreach (SpecificPseudoPrefabTag specificPseudoPrefabTag in FindObjectsOfType<SpecificPseudoPrefabTag>())
+        {
+            switch (specificPseudoPrefabTag.prefabTag)
+            {
+                case "dispenser_coal_01":
+                case "dlc08_condiment_dispenser":
+                    {
+                        PseudoPrefabSO[] itemSOs = specificPseudoPrefabTag.GetComponent<PseudoPrefabSOArray>().pseudoPrefabSOs;
+                        foreach (PseudoPrefabSO itemSO in itemSOs)
+                        {
+                            OrderDefinitionNode orderDefinitionNode = RecipeHelper.GetIngredientOrItemOrderNode(itemSO);
+                            if (!allOrderDefinitionNodes.Any(x => x.Equals(orderDefinitionNode)))
+                            {
+                                allOrderDefinitionNodes.Add(orderDefinitionNode);
+                                allIngredients.Add(itemSO);
+                            }
+
+                        }
+                        break;
+                    }
+
+                default:
+                    break;
+            }
+        }
+
         levelInfo.allIngredients = allIngredients.ToArray();
     }
 

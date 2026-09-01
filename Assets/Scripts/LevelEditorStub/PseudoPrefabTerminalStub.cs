@@ -8,5 +8,6 @@ namespace LevelEditorStub
     public class PseudoPrefabTerminalStub : PseudoPrefabStub
     {
         [SerializeField] public GameObject pilotableObject;
+        [SerializeField] public PseudoPrefabSO joystickMatSO;
     }
 }

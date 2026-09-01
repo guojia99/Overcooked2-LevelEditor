@@ -32,6 +32,7 @@ namespace LevelEditorStub
 
         [Header("Audio Settings")]
         [SerializeField] public PseudoPrefabSO inLevelMusicSO;
+        [SerializeField] public AudioClip inLevelMusic;
         [SerializeField] public GameLoopingAudioTag[] inLevelAmbiences = new GameLoopingAudioTag[0];
         [SerializeField] public PseudoPrefabSO[] audioDirectorySOs = new PseudoPrefabSO[0];
 

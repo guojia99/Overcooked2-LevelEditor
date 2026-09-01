@@ -36,11 +36,25 @@ namespace LevelEditor
                 multiCookingStationTypes.cookingStationTypes = cookingUtensilStub.allowedCookingStationTypes.Select(x => (CookingStationType)x).ToArray();
             }
 
-            var contentsCosmeticDecisions = childGameObject.RequestComponentRecursive<ContentsCosmeticDecisions>();
-            if (contentsCosmeticDecisions != null)
+            if (childGameObject.GetComponent<WokEffectsCosmeticDecisions>() == null)
             {
-                contentsCosmeticDecisions.m_contentsYPositionWhenEmpty = -0.2f;
-                contentsCosmeticDecisions.m_prefabLookup = null;
+                var contentsCosmeticDecisions = childGameObject.RequestComponentRecursive<ContentsCosmeticDecisions>();
+                if (contentsCosmeticDecisions != null)
+                {
+                    contentsCosmeticDecisions.m_contentsYPositionWhenEmpty = -0.2f;
+                    contentsCosmeticDecisions.m_prefabLookup = null;
+                }
+            }
+            
+            if (childGameObject.GetComponent<WokEffectsCosmeticDecisions>() != null)
+            {
+                Transform transform = childGameObject.transform;
+                Vector3 localPosition1 = transform.InverseTransformPoint(transform.TransformPoint(new Vector3(-0.6f, 0f, 0.6f)) + new Vector3(0f, 0f, 0.6f));
+                Vector3 localPosition2 = transform.InverseTransformPoint(transform.TransformPoint(new Vector3(-0.6f, 0f, 0.6f)) + new Vector3(0f, 0f, -0.6f));
+                if (childGameObject.GetComponent<IngredientContentGUI>() != null)
+                    childGameObject.GetComponent<IngredientContentGUI>().m_Offset = localPosition1;
+                if (childGameObject.GetComponent<CookingHandler>() != null)
+                    childGameObject.GetComponent<CookingHandler>().m_cookingUIPrefabOffset = localPosition2;
             }
 
             // griddlepan's m_approvedContentsList is originally null
@@ -165,6 +179,12 @@ namespace LevelEditor
                             typeof(OverlapModelsMealDecisions)
                                 .GetField("m_prefabLookup", BindingFlags.Instance | BindingFlags.NonPublic)
                                 .SetValue(cosmeticsPrefab.GetComponent<OverlapModelsMealDecisions>(), newLookup);
+                            if (cosmeticsPrefab.GetComponent<RoastingTrayCosmeticDecisions>() != null)
+                            {
+                                typeof(RoastingTrayCosmeticDecisions)
+                                    .GetField("m_repositionLookup", BindingFlags.Instance | BindingFlags.NonPublic)
+                                    .SetValue(cosmeticsPrefab.GetComponent<RoastingTrayCosmeticDecisions>(), newLookup);
+                            }
                             cookableContainer.m_cosmeticsPrefab = cosmeticsPrefab;
                         }
                         else if (cookableContainer.m_cosmeticsPrefab.GetComponent<SkewerCosmeticDecisions>() != null)
@@ -208,6 +228,26 @@ namespace LevelEditor
                             typeof(SkewerCosmeticDecisions)
                                 .GetField("m_cookedPrefabLookup", BindingFlags.Instance | BindingFlags.NonPublic)
                                 .SetValue(cosmeticsPrefab.GetComponent<SkewerCosmeticDecisions>(), cookedLookup);
+                            cookableContainer.m_cosmeticsPrefab = cosmeticsPrefab;
+                        }
+                        else if (cookableContainer.m_cosmeticsPrefab.GetComponent<WokCosmeticDecisions>() != null)
+                        {
+                            GameObject cosmeticsPrefab = RuntimePrefabManager.CloneAsInactivePrefab(cookableContainer.m_cosmeticsPrefab);
+                            object lookups = typeof(WokCosmeticDecisions)
+                                .GetField("m_prefabLookups", BindingFlags.Instance | BindingFlags.NonPublic)
+                                .GetValue(cosmeticsPrefab.GetComponent<WokCosmeticDecisions>());
+                            typeof(WokCosmeticDecisions)
+                                .GetNestedType("PrefabLookups", BindingFlags.NonPublic)
+                                .GetField("m_rawPrefabLookup", BindingFlags.Instance | BindingFlags.Public)
+                                .SetValue(lookups, newLookup);
+                            typeof(WokCosmeticDecisions)
+                                .GetNestedType("PrefabLookups", BindingFlags.NonPublic)
+                                .GetField("m_cookedPrefabLookup", BindingFlags.Instance | BindingFlags.Public)
+                                .SetValue(lookups, newLookup);
+                            typeof(WokCosmeticDecisions)
+                                .GetField("m_prefabLookups", BindingFlags.Instance | BindingFlags.NonPublic)
+                                .SetValue(cosmeticsPrefab.GetComponent<WokCosmeticDecisions>(), lookups);
+
                             cookableContainer.m_cosmeticsPrefab = cosmeticsPrefab;
                         }
                     }

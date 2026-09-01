@@ -18,6 +18,12 @@ namespace LevelEditor
             {
                 childGameObject.GetComponent<HatMeshVisibility>().m_initialVisState = (HatMeshVisibility.VisState)playerStub.hatVisState;
             }
+
+            if (childGameObject.GetComponent<HeldItemsMeshVisibility>() != null && playerStub.knifeVisState != PseudoPrefabPlayerStub.KnifeVisState.None)
+            {
+                int flag = 24 + new int[] { 1, 1, 2, 128, 256 }[(int)playerStub.knifeVisState];
+                childGameObject.GetComponent<HeldItemsMeshVisibility>().m_stateFlags[0] = flag;
+            }
         }
     }
 }

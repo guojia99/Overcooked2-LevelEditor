@@ -9,59 +9,54 @@ using UnityEngine;
 namespace LevelEditor
 {
     [ExecuteInEditMode]
-    public class PseudoParticleSystem : MonoBehaviour
+    public class PseudoParticleSystem : SetupCustomPrefab
     {
-        private PseudoParticleSystemStub stub;
+        private PseudoParticleSystemStub pseudoParticleSystemStub;
         private ParticleSystem ps;
         private ParticleSystemRenderer psr;
 
-        void Awake()
+        protected override void Awake()
         {
-            stub = GetComponent<PseudoParticleSystemStub>();
+            pseudoParticleSystemStub = GetComponent<PseudoParticleSystemStub>();
             ps = GetComponent<ParticleSystem>();
             psr = GetComponent<ParticleSystemRenderer>();
-
-            if (PseudoPrefabManager.Instance.GameEditState == GameEditState.Edit)
-            {
-                Setup();
-            }
         }
 
-        public void Setup() 
+        public override void Setup() 
         {
             Clear();
-            psr.renderMode = ParticleSystemRenderMode.Mesh;
 
-            if (stub.meshSO != null)
+            if (pseudoParticleSystemStub.meshSO != null)
             {
-                Mesh mesh = PseudoPrefabManager.LoadMeshSubAsset(stub.meshSO);
+                psr.renderMode = ParticleSystemRenderMode.Mesh;
+                Mesh mesh = PseudoPrefabManager.LoadMeshSubAsset(pseudoParticleSystemStub.meshSO);
                 psr.SetMeshes(new Mesh[] { mesh });
             }
 
-            if (stub.materialSO != null)
+            if (pseudoParticleSystemStub.materialSO != null)
             {
-                Material material = PseudoPrefabManager.LoadAsset<Material>(stub.materialSO);
+                Material material = PseudoPrefabManager.LoadAsset<Material>(pseudoParticleSystemStub.materialSO);
                 psr.sharedMaterial = material;
             }
             gameObject.SetActive(false);
             gameObject.SetActive(true);
         }
 
-        public void Clear()
+        public override void Clear()
         {
-            stub = GetComponent<PseudoParticleSystemStub>();
+            pseudoParticleSystemStub = GetComponent<PseudoParticleSystemStub>();
             ps = GetComponent<ParticleSystem>();
             psr = GetComponent<ParticleSystemRenderer>();
 
-            psr.renderMode = ParticleSystemRenderMode.None;
-            if (stub.materialSO != null)
+            if (pseudoParticleSystemStub.meshSO != null)
             {
-                psr.sharedMaterial = null;
+                psr.renderMode = ParticleSystemRenderMode.None;
+                psr.mesh = null;
             }
 
-            if (stub.meshSO != null)
+            if (pseudoParticleSystemStub.materialSO != null)
             {
-                psr.mesh = null;
+                psr.sharedMaterial = null;
             }
         }
     }

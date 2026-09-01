@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace LevelEditorStub
 {
-    public class PseudoParticleSystemStub : Stub
+    public class PseudoParticleSystemStub : SetupCustomPrefabStub
     {
         [SerializeField] public PseudoPrefabSO meshSO;
         [SerializeField] public PseudoPrefabSO materialSO;

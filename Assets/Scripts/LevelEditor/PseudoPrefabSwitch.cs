@@ -19,6 +19,10 @@ namespace LevelEditor
             cos.m_inactiveMaterial = PseudoPrefabManager.LoadAsset<Material>(switchStub.inactiveMaterial);
             cos.m_buttonBit.sharedMaterial = cos.m_activeMaterial;
 
+            Transform transform = childGameObject.transform.Find("Switch_Base");
+            if (transform != null && transform.GetComponent<Renderer>() != null)
+                transform.GetComponent<Renderer>().sharedMaterial = cos.m_activeMaterial;
+
             foreach (var componet in gameObject.GetComponents<TriggerOnObject>())
             {
                 componet.m_targetObject = childGameObject;
@@ -27,8 +31,10 @@ namespace LevelEditor
             var triggerOnAnimator = childGameObject.GetComponent<TriggerOnAnimator>();
             triggerOnAnimator.m_triggerToFire = switchStub.triggerOnAnimator;
             triggerOnAnimator.m_targetAnimator = switchStub.animatorToTrigger;
+            triggerOnAnimator.m_triggerToFireHash = string.IsNullOrEmpty(triggerOnAnimator.m_triggerToFire) ? 
+                0 : Animator.StringToHash(triggerOnAnimator.m_triggerToFire);
 
-            if (switchStub.objectToTrigger != null & switchStub.objectToTrigger.Length > 0)
+            if (switchStub.objectToTrigger != null && switchStub.objectToTrigger.Length > 0)
             {
                 var triggerOnObject = childGameObject.AddComponent<TriggerOnObject>();
                 triggerOnObject.m_trigger = "Switch";

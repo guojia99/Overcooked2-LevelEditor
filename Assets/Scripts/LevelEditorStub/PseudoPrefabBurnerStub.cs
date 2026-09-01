@@ -13,6 +13,7 @@ namespace LevelEditorStub
         [SerializeField] public Vector3[] targetPositions;
         [SerializeField] public bool randomTargetOrder;
         [SerializeField] public bool hideVisual;
+        [SerializeField] public PseudoPrefabSO projectileSO;
 
         public enum FireMode
         {

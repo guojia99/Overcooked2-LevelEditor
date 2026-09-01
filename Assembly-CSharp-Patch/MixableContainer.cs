@@ -146,7 +146,9 @@ public class MixableContainer : MonoBehaviour
             }
         }
         // can't throw ingredients into a mixbowl in an oven
-        else if (transform.parent.GetComponentInParent<OvenCosmeticDecisions>() != null)
+        else if (
+            transform.parent.GetComponentInParent<OvenCosmeticDecisions>() != null || 
+            transform.parent.GetComponentInParent<FurnaceOvenCosmeticDecisions>() != null)
             return false;
 
         if (assembledDefinitionNode is CookedCompositeAssembledNode)
