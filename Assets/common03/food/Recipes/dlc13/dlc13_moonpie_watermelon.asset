@@ -9,9 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 753d9e70603f6a140b05f30f176ec2dd, type: 3}
-  m_Name: dlc13_moonpie_watermelon
+  m_Name: DLC13_Moonpie_watermelon
   m_EditorClassIdentifier: 
   prefabName: MoonpieWatermelon
   bundleName: bundle448
   assetPath: Assets/downloadablecontent/dlc13/assets/data/orderdefinitions/recipeitems/dlc13_moonpie_watermelon.asset
-  score: 100
+  score: 60

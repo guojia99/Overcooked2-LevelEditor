@@ -9,8 +9,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cff7c13895ab9e47a5e02d4619cc3b9, type: 3}
-  m_Name: DLC13_Strawberry
+  m_Name: m_DLC13_MooncakeStrawberryChocolate
   m_EditorClassIdentifier: 
-  prefabName: dlc13_strawberry
+  prefabName: DLC13_MooncakeStrawberryChocolate
   bundleName: bundle449
-  assetPath: Assets/downloadablecontent/dlc13/assets/prefabs/ingredients/dlc13_strawberry.prefab
+  assetPath: Assets/downloadablecontent/dlc13/assets/prefabs/ingredients/DLC13_MooncakeStrawberryChocolate.prefab

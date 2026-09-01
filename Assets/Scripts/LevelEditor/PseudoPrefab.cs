@@ -750,6 +750,35 @@ namespace LevelEditor
                         break;
                     }
 
+                case "p_seaweedfloat_01":
+                    {
+                        PseudoPrefabSO matSO = ScriptableObject.CreateInstance<PseudoPrefabSO>();
+                        matSO.prefabName = "mat_seaweed_02";
+                        matSO.bundleName = "bundle448";
+                        matSO.assetPath = "Assets\\downloadablecontent\\dlc13\\assets\\models\\dressing\\materials\\mat_seaweed_02.mat".Replace("\\", "/");
+                        Material mat = PseudoPrefabManager.LoadAsset<Material>(matSO);
+                        Renderer renderer = childGameObject.GetComponent<Renderer>();
+                        renderer.sharedMaterial = mat;
+                        DestroyImmediate(matSO);
+                        break;
+                    }
+
+                case "dlc13_lotuspressureswitch_large":
+                case "dlc13_lotuspressureswitch_small":
+                    {
+                        if (childGameObject.GetComponent<EditorGridSnap>() != null)
+                            childGameObject.GetComponent<EditorGridSnap>().enabled = false;
+                        break;
+                    }
+
+                case "dlc13_lotuspressureswitch_small_2":
+                    {
+                        if (childGameObject.GetComponent<EditorGridSnap>() != null)
+                            childGameObject.GetComponent<EditorGridSnap>().enabled = false;
+                        childGameObject.transform.Find("DLC13_LotusPressureSwitch (1)/PlatformCollisions/Art/m_lilypad_01 (4) Group/m_lilypad_flower_02 (1)").gameObject.SetActive(false);
+                        break;
+                    }
+
                 default:
                     break;
             }
