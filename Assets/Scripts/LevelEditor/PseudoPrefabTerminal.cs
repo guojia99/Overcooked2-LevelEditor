@@ -16,7 +16,9 @@ namespace LevelEditor
             {
                 DestroyImmediate(component);
             }
-            childGameObject.AddComponent<AnticipateInteractionHighlight>();
+
+            if (childGameObject.GetComponent<AnticipateInteractionHighlight>() == null)
+                childGameObject.AddComponent<AnticipateInteractionHighlight>();
 
             if (terminalStub.joystickMatSO != null)
             {
