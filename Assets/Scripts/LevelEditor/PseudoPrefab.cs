@@ -645,10 +645,27 @@ namespace LevelEditor
 
                 case "dlc08_condiment_dispenser":
                 case "dlc08_drink_machine":
+                case "dlc11_drink_dispenser":
                     {
                         foreach (var componet in gameObject.GetComponents<TriggerOnObject>())
                         {
                             componet.m_targetObject = childGameObject;
+                        }
+                        break;
+                    }
+
+                case "dlc11_condiment_dispenser":
+                    {
+                        foreach (var componet in gameObject.GetComponents<TriggerOnObject>())
+                        {
+                            componet.m_targetObject = childGameObject;
+                        }
+                        PseudoPrefabSOArray pseudoPrefabSOArray = GetComponent<PseudoPrefabSOArray>();
+                        if (pseudoPrefabSOArray != null && !pseudoPrefabSOArray.pseudoPrefabSOs.IsEmpty())
+                        {
+                            IngredientOrderNode[] nodes = pseudoPrefabSOArray.pseudoPrefabSOs.Select(x => RecipeHelper.GetIngredientOrderNode(x)).ToArray();
+                            childGameObject.GetComponent<PlacementItemSwitcher>().m_ingredients = nodes;
+                            childGameObject.GetComponent<IngredientPropertiesComponent>().SetIngredientOrderNode(nodes[0]);
                         }
                         break;
                     }
@@ -721,6 +738,15 @@ namespace LevelEditor
                     {
                         HandleSpecificPrefabs_DisableLights();
                         HandleSpecificPrefabs_Snow_DLC09_2();
+                        break;
+                    }
+
+                case "CounterCornerFloat":
+                    {
+                        DestroyImmediate(childGameObject.GetComponent<AnticipateInteractionHighlight>());
+                        DestroyImmediate(childGameObject.GetComponent<TabletopConveyenceWindReceiver>());
+                        DestroyImmediate(childGameObject.GetComponent<TabletopConveyenceReceiver>());
+                        DestroyImmediate(childGameObject.GetComponent<AttachStation>());
                         break;
                     }
 

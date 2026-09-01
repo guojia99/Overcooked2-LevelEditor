@@ -9,8 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cff7c13895ab9e47a5e02d4619cc3b9, type: 3}
-  m_Name: DLC11_Milk
+  m_Name: plank 2 NoEnds
   m_EditorClassIdentifier: 
-  prefabName: dlc11_milk
+  prefabName: plank 2 NoEnds
   bundleName: bundle428
-  assetPath: Assets/downloadablecontent/dlc11/dlc_assets/prefabs/ingredients/dlc11_milk.prefab
+  assetPath: Assets/downloadablecontent/dlc11/dlc_assets/prefabs/dressing/plank 2
+    NoEnds.prefab

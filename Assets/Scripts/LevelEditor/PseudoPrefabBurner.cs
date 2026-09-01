@@ -40,6 +40,12 @@ namespace LevelEditor
                 block.GetComponent<BoxCollider>().size = new Vector3(1.2f, 1.5f, 1.2f);
                 block.GetComponent<CapsuleCollider>().enabled = false;
             }
+
+            if (burnerStub.projectileSO != null)
+            {
+                GameObject projectile = PseudoPrefabManager.LoadAsset(burnerStub.projectileSO);
+                projectileSpawner.m_projectilePrefab = projectile;
+            }
         }
 
         public override void Cleanup()
